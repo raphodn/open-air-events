@@ -1,0 +1,24 @@
+{
+  "name": "open-air-events",
+  "version": "0.0.1",
+  "description": "Carte des cinéma en plein air",
+  "main": "index.js",
+  "repository": "https://github.com/raphodn/open-air-events",
+  "author": "Raphael Odini <raphodn@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "vite": "^8.1.0",
+    "vue": "^3.5.39",
+    "vue-router": "^5.1.0",
+    "vuetify": "^3.12.8"
+  },
+  "devDependencies": {
+    "@mdi/font": "^7.4.47",
+    "@vitejs/plugin-vue": "^6.0.7"
+  }
+}

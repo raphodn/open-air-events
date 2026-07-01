@@ -1,0 +1,76 @@
+{
+  "count": 2,
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          5.7132168,
+          45.1874229
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "createdate": "2026-07-01T23:08:51.845930",
+        "id": "f808d2ce-3aa8-48b8-9eaa-6e97de4952c9",
+        "label": "Le sommet des dieux",
+        "lastupdate": "2026-07-01T23:08:51.845930",
+        "lat": 45.1874229,
+        "lon": 5.7132168,
+        "osm_addr_city": "Grenoble",
+        "osm_addr_country": "France",
+        "osm_addr_countrycode": "FR",
+        "osm_addr_housenumber": "",
+        "osm_addr_postcode": "38000",
+        "osm_addr_state": "Auvergne-Rhône-Alpes",
+        "osm_addr_street": "",
+        "osm_id": 23579152,
+        "osm_key": "leisure",
+        "osm_name": "Square Saint-Bruno",
+        "osm_type": "W",
+        "osm_value": "park",
+        "start": "2026-06-07T19:00:00+0200",
+        "stop": "2026-06-07T23:00:00+0200",
+        "type": "scheduled",
+        "url": "https://www.grenoble-tourisme.com/fr/catalogue/detail/cine-plein-air-le-sommet-des-dieux-7883264/",
+        "what": "culture.cinema.outdoor"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          5.72664,
+          45.1922202
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "createdate": "2026-07-01T23:07:00.806521",
+        "id": "0e035ca3-7dd7-4357-8327-f4c0f5c31764",
+        "label": "Festival du film court",
+        "lastupdate": "2026-07-01T23:07:00.806521",
+        "lat": 45.1922202,
+        "lon": 5.72664,
+        "osm_addr_city": "Grenoble",
+        "osm_addr_country": "France",
+        "osm_addr_countrycode": "FR",
+        "osm_addr_housenumber": "",
+        "osm_addr_postcode": "38000",
+        "osm_addr_state": "Auvergne-Rhône-Alpes",
+        "osm_addr_street": "",
+        "osm_id": 57391104,
+        "osm_key": "leisure",
+        "osm_name": "Jardin de Ville",
+        "osm_type": "W",
+        "osm_value": "park",
+        "start": "2026-06-25T22:00:00+0200",
+        "stop": "2026-06-26T00:00:00+0200",
+        "type": "scheduled",
+        "url": "https://www.cinemathequedegrenoble.fr/festival/programmation-2026/plein-air-programme-4/",
+        "what": "culture.cinema.outdoor"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}
