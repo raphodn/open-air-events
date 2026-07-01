@@ -6,7 +6,7 @@
 
   <br />
 
-  <h2>{{ events.length }} événements recencés</h2>
+  <h2>{{ eventsCount }} événements recencés</h2>
 
   <p>{{ upcomingEvents.length }} à venir. {{ pastEvents.length }} passés.</p>
   <v-btn color="primary" to="/events">Voir la liste</v-btn>
@@ -30,13 +30,13 @@ import EventCard from '../components/EventCard.vue'
 import oedbService from '../services/openeventdatabase.js'
 
 const events = ref([])
-const lastUpdated = ref(null)
+const eventsCount = ref(0)
 
 const loadEvents = () => {
-  oedbService.getEventsFromJSON()
+  oedbService.getEvents()
     .then(data => {
       events.value = data.features
-      // lastUpdated.value = data.lastUpdated
+      eventsCount.value = data.count
     })
     .catch(error => {
       console.error('Error loading events:', error)

@@ -1,5 +1,8 @@
 <template>
-  <h1>Tous les événements</h1>
+  <h1>
+    Tous les événements
+    <small>{{ eventsCount }}</small>
+  </h1>
 
   <v-row>
     <v-col v-for="event in events" :key="event.id" cols="12" sm="6" md="4" xl="3">
@@ -20,11 +23,13 @@ import EventCard from '../components/EventCard.vue'
 import oedbService from '../services/openeventdatabase.js'
 
 const events = ref([])
+const eventsCount = ref(0)
 
 const loadEvents = () => {
-  oedbService.getEventsFromJSON()
+  oedbService.getEvents()
     .then(data => {
       events.value = data.features
+      eventsCount.value = data.count
     })
     .catch(error => {
       console.error('Error loading events:', error)

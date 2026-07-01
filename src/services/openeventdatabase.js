@@ -9,6 +9,17 @@ const getEventsFromJSON = () => {
   return Promise.resolve(eventsData)
 }
 
+const getEvents = () => {
+  return fetch(`${OEDB_API_URL}/event?what=${EVENT_WHAT}&start=2020-01-01T00:00`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      // 'User-Agent': 'CinéPleinAir'
+    }
+  })
+  .then(response => response.json())
+}
+
 const createEvent = (eventData) => {
   // filter out some keys
   const keysToRemove = ['lat', 'lon']
@@ -48,6 +59,7 @@ const eventLocationFullName = (event) => {
 
 export default {
   getEventsFromJSON,
+  getEvents,
   createEvent,
   eventLocationFullName
 }
