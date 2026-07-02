@@ -1,12 +1,12 @@
 <template>
-  <h1>Bienvenue sur CinéPleinAir</h1>
+  <h1 class="text-h5 font-weight-bold">Bienvenue sur CinéPleinAir</h1>
 
   <p>Découvrez les événements de cinéma en plein air près de chez vous.</p>
-  <p>Gratuit et collaboratif, ajoutez les projections manquantes en quelques clics.</p>
+  <p>Gratuit et collaboratif. Vous pouvez ajouter les projections manquantes en quelques clics.</p>
 
   <br />
 
-  <h2>{{ eventsCount }} événements recencés</h2>
+  <h2 class="text-h6 font-weight-bold">{{ eventsCount }} événements recencés</h2>
 
   <p>{{ upcomingEvents.length }} à venir. {{ pastEvents.length }} passés.</p>
   <v-btn color="primary" to="/events">Voir la liste</v-btn>
@@ -14,7 +14,7 @@
   <br />
   <br />
 
-  <h2>Derniers événements ajoutés</h2>
+  <h2 class="text-h6 font-weight-bold">Derniers événements ajoutés</h2>
 
   <v-row>
     <v-col v-for="event in recentlyAddedEvents" :key="event.id" cols="12" sm="6" md="4" xl="3">
@@ -25,7 +25,6 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { formatDate } from '../utils.js'
 import EventCard from '../components/EventCard.vue'
 import oedbService from '../services/openeventdatabase.js'
 

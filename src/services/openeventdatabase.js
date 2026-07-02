@@ -1,4 +1,7 @@
+import constants from '@/constants.js'
 import eventsData from '@/data/events.json'
+import utils from '../utils.js'
+import openstreetmapService from '../services/openstreetmap.js'
 
 
 const OEDB_API_URL = 'https://api.openeventdatabase.org'
@@ -10,7 +13,7 @@ const getEventsFromJSON = () => {
 }
 
 const getEvents = () => {
-  return fetch(`${OEDB_API_URL}/event?what=${EVENT_WHAT}&start=2020-01-01T00:00`, {
+  return fetch(`${constants.OEDB_API_URL}/event?what=${constants.OEDB_WHAT_DEFAULT}&start=2020-01-01T00:00`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -21,23 +24,32 @@ const getEvents = () => {
 }
 
 const createEvent = (eventData) => {
-  // filter out some keys
-  const keysToRemove = ['lat', 'lon']
-  const eventProperties = Object.fromEntries(Object.entries(eventData).filter(([key]) => !keysToRemove.includes(key)))
+  // manage timestamps
+  // add stop key & and TZ
+  const eventTimestamps = {
+    start: utils.formatDateTimeWithTZ(eventData.start),
+    stop: utils.formatDateTimeWithTZ(utils.dateTimeAddHours(eventData.start, 2)) // +2 hours
+  }
+  // manage location
+  // map the photon location object to the event location object
+  const eventLocation = openstreetmapService.photonLocationToEventLocation(eventData.location)
+  const eventProperties = { ...eventData, ...eventTimestamps, ...eventLocation }
+  delete eventProperties.location // Remove the original location object
   // build the payload (geoJSON)
   const payload = {
     'type': 'Feature',
     'geometry': {
       'type': 'Point',
-      'coordinates': [eventData.lon, eventData.lat]
+      'coordinates': [eventProperties.lon, eventProperties.lat]
     },
     'properties': {
       'type': 'scheduled',
-      'what': EVENT_WHAT,
+      // 'what': constants.OEDB_WHAT_DEFAULT,  // already provided by eventData
       ...eventProperties
     }
   }
-  return fetch(`${OEDB_API_URL}/event`, {
+
+  return fetch(`${constants.OEDB_API_URL}/event`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -45,7 +57,13 @@ const createEvent = (eventData) => {
     },
     body: JSON.stringify(payload)
   })
-  .then(response => response.json())
+  .then((response) => {
+    if (response.status !== 201) {
+      throw new Error(`Erreur: ${response.status}`)
+    }
+
+    return response.json()
+  })
 }
 
 const eventLocationFullName = (event) => {
