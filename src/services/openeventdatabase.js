@@ -5,7 +5,9 @@ import openstreetmapService from '../services/openstreetmap.js'
 
 
 const OEDB_API_URL = 'https://api.openeventdatabase.org'
-const EVENT_WHAT = 'culture.cinema.outdoor'
+const OEDB_START_STOP = 'start=2026-01-01T00:00&stop=2026-12-31T23:59'
+// const OEDB_START_STOP = '?when=NEXT365DAYS'
+const OEDB_LIMIT = 1000
 
 
 const getEventsFromJSON = () => {
@@ -13,7 +15,7 @@ const getEventsFromJSON = () => {
 }
 
 const getEvents = () => {
-  return fetch(`${constants.OEDB_API_URL}/event?what=${constants.OEDB_WHAT_DEFAULT}&start=2020-01-01T00:00`, {
+  return fetch(`${constants.OEDB_API_URL}/event?what=${constants.OEDB_WHAT_DEFAULT}&${OEDB_START_STOP}&limit=${OEDB_LIMIT}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
