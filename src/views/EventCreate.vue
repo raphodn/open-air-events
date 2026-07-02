@@ -1,18 +1,40 @@
 <template>
-  <h1>Créer un événement</h1>
+  <h1 class="text-h5 font-weight-bold">Ajouter un événement</h1>
 
-  <p>ℹ️ la base de données utilisée est <a href="https://wiki.openstreetmap.org/wiki/OpenEventDatabase" target="_blank">OpenEventDatabase</a> (<i>culture.cinema.outdoor</i>)</p>
+  <v-alert class="mt-4" type="info" variant="outlined" density="compact">
+    La base de données utilisée est <a :href="constants.OEDB_WIKI_URL" target="_blank">OpenEventDatabase</a> (OEDB)
+  </v-alert>
 
   <br />
 
   <v-form @submit.prevent="createEvent">
 
-    <h2>1. Informations</h2>
+    <h2 class="text-subtitle-1 font-weight-bold">Type</h2>
+
+    <v-row>
+      <v-col cols="12">
+        <v-select
+          class="pl-4"
+          variant="plain"
+          density="compact"
+          v-model="eventForm.what"
+          :items="constants.OEDB_WHAT_LIST"
+          item-value="key"
+          item-title="label"
+          :rules="[rules.required]"
+          required
+          readonly
+        ></v-select>
+      </v-col>
+    </v-row>
+
+    <h2 class="text-subtitle-1 font-weight-bold">Informations</h2>
     <v-row>
       <v-col cols="12">
         <v-text-field
           v-model="eventForm.label"
           label="Nom de l'événement *"
+          hide-details="auto"
           :rules="[rules.required]"
           required
         ></v-text-field>
@@ -23,7 +45,9 @@
       <v-col cols="12">
         <v-text-field
           v-model="eventForm.url"
-          label="URL de l'événement *"
+          label="Lien vers l'événement *"
+          hint="https://www.example.com"
+          persistent-hint
           :rules="[rules.required, rules.url]"
           required
         ></v-text-field>
@@ -40,32 +64,23 @@
           required
         ></v-text-field>
       </v-col>
-      
-      <v-col cols="12" md="6">
-        <v-text-field
-          v-model="eventForm.stop"
-          label="Date et heure de fin *"
-          type="datetime-local"
-          :rules="[rules.required, rules.dateTimeFormat, rules.endTimeAfterStart]"
-          required
-        ></v-text-field>
-      </v-col>
     </v-row>
 
-    <h2>2. Lieu</h2>
+    <h2 class="text-subtitle-1 font-weight-bold">Lieu</h2>
     
     <v-row>
       <v-col cols="12">
         <v-btn
+          size="small"
           color="primary"
           variant="outlined"
           @click="openLocationDialog"
-          prepend-icon="mdi-map-marker"
+          prepend-icon="mdi-magnify"
         >
           Rechercher
         </v-btn>
         <LocationResult v-if="eventForm.location" class="mt-4" :location="eventForm.location.properties" />
-        <v-alert v-else class="mt-4" type="warning" variant="outlined" density="compact">Aucun lieu sélectionné</v-alert>
+        <p v-else class="text-error">Aucun lieu sélectionné</p>
       </v-col>
     </v-row>
 
@@ -77,7 +92,7 @@
           :disabled="!eventFormFilled"
           :loading="isSubmitting"
         >
-          Créer l'événement
+          Ajouter
         </v-btn>
         <v-btn
           variant="text"
@@ -100,19 +115,19 @@
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import oedbService from '../services/openeventdatabase.js'
-import openstreetmapService from '../services/openstreetmap.js'
 import LocationSearchDialog from '../components/LocationSearchDialog.vue'
 import LocationResult from '../components/LocationResult.vue'
-import { formatDateTimeWithTZ } from '../utils.js'
+import constants from '../constants'
 
 const router = useRouter()
 
 // Init the form data
 const eventForm = ref({
+  what: constants.OEDB_WHAT_LIST[0].key,  // 'culture.cinema.outdoor'
   label: '',
   url: '',
   start: '',
-  stop: '',
+  // stop: '',  // will be automatically set to +2 hours
   location: '',
 })
 
@@ -144,7 +159,8 @@ const rules = reactive({
 })
 
 const eventFormFilled = computed(() => {
-  return eventForm.value.label && eventForm.value.url && eventForm.value.start && eventForm.value.stop && eventForm.value.location
+  const requiredFields = ['what', 'label', 'url', 'start', 'location']
+  return requiredFields.every(field => !!eventForm.value[field])
 })
 
 // Location selection
@@ -164,15 +180,10 @@ const createEvent = async () => {
 
   isSubmitting.value = true
 
-  const eventStartStopWithTZ = {
-    start: formatDateTimeWithTZ(eventForm.value.start),
-    stop: formatDateTimeWithTZ(eventForm.value.stop)
-  }
-  const eventLocation = openstreetmapService.photonLocationToEventLocation(eventForm.value.location)
-  let eventData = {...eventForm.value, ...eventStartStopWithTZ, ...eventLocation}
-  delete eventData.location // Remove the original location object
-  oedbService.createEvent(eventData)
+  // create the event
+  oedbService.createEvent(eventForm.value)
     .then(response => {
+      console.log(response)
       alert('Événement créé avec succès !')
       router.push('/events')
     })

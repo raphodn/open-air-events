@@ -1,5 +1,5 @@
 <template>
-  <h1>
+  <h1 class="text-h5 font-weight-bold">
     Tous les événements
     <small>{{ eventsCount }}</small>
   </h1>
