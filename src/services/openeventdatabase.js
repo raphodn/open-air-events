@@ -1,6 +1,6 @@
 import constants from '@/constants.js'
 import eventsData from '@/data/events.json'
-import utils from '../utils.js'
+import dateUtils from '../utils/date.js'
 import openstreetmapService from '../services/openstreetmap.js'
 
 
@@ -27,8 +27,8 @@ const createEvent = (eventData) => {
   // manage timestamps
   // add stop key & and TZ
   const eventTimestamps = {
-    start: utils.formatDateTimeWithTZ(eventData.start),
-    stop: utils.formatDateTimeWithTZ(utils.dateTimeAddHours(eventData.start, 2)) // +2 hours
+    start: dateUtils.formatDateTimeWithTZ(eventData.start),
+    stop: dateUtils.formatDateTimeWithTZ(dateUtils.dateTimeAddHours(eventData.start, 2)) // +2 hours
   }
   // manage location
   // map the photon location object to the event location object
