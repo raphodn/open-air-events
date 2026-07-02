@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogVisible" max-width="600px">
+  <v-dialog v-model="dialogVisible" scrollable :height="dialogHeight" :width="dialogWidth">
     <v-card title="Rechercher un lieu">
       <template #append>
         <v-icon icon="mdi-close" @click="closeDialog" />
@@ -8,19 +8,28 @@
       <v-divider />
 
       <v-card-text>
-        <v-text-field
-          v-model="searchQuery"
-          label="Entrez une adresse ou un nom de lieu"
-          autofocus
-          @keyup.enter="performLocationSearch"
-          :loading="isSearching"
-        >
-          <template #append-inner>
-            <v-btn color="primary" icon="mdi-magnify" :disabled="!searchQuery" @click="performLocationSearch" />
-          </template>
-        </v-text-field>
+        <v-form class="mb-4" @submit.prevent="performLocationSearch">
+          <v-text-field
+            v-model="searchQuery"
+            label="Entrez une adresse ou un nom de lieu"
+            autofocus
+            @keyup.enter="performLocationSearch"
+            :loading="isSearching"
+          >
+            <template #append-inner>
+              <v-btn color="primary" icon="mdi-magnify" :disabled="!searchQuery" @click="performLocationSearch" />
+            </template>
+          </v-text-field>
+        </v-form>
         
-        <LocationResult v-for="(result, index) in searchResults" :key="index" :location="result.properties" @click="selectLocation(result)" />
+        <v-row>
+          <v-col cols="12" sm="6">
+            <LocationResult v-for="(result, index) in searchResults" :key="index" :location="result.properties" @click="selectLocation(result)" />
+          </v-col>
+          <v-col cols="12" sm="6" style="min-height:400px">
+            <LeafletMap :locations="searchResults" :showActions="true" @locationSelected="selectLocation" />
+          </v-col>
+        </v-row>
       </v-card-text>
 
       <v-divider />
@@ -35,8 +44,10 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useDisplay } from 'vuetify'
 import LocationResult from './LocationResult.vue'
+import LeafletMap from './LeafletMap.vue'
 import openstreetmapService from '../services/openstreetmap.js'
 
 const props = defineProps({
@@ -52,6 +63,7 @@ const dialogVisible = ref(props.modelValue)
 const searchQuery = ref('')
 const searchResults = ref([])
 const isSearching = ref(false)
+const display = useDisplay()
 
 // Watch for changes to the modelValue prop
 watch(() => props.modelValue, (newValue) => {
@@ -71,6 +83,13 @@ watch(dialogVisible, (newValue) => {
   }
 })
 
+const dialogHeight = computed(() => {
+  return display.smAndUp.value ? '80%' : '100%'
+})
+const dialogWidth = computed(() => {
+  return display.smAndUp.value ? '80%' : '100%'
+})
+
 const performLocationSearch = async () => {
   if (!searchQuery.value.trim()) return
   
@@ -78,7 +97,6 @@ const performLocationSearch = async () => {
   openstreetmapService.photonSearch(searchQuery.value)
   .then(results => {
     searchResults.value = results
-    console.log('Location search results:', results)
   })
   .catch(error => {
     console.error('Error searching for location:', error)
