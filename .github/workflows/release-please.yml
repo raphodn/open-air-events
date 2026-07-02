@@ -1,21 +1,17 @@
 # https://github.com/googleapis/release-please-action
 # config here: release-please-config.json
 
-name: Run release-please
+name: release-please
 
 on:
   push:
     branches:
       - main
 
-permissions:
-    contents: write
-    pull-requests: write
-
 jobs:
   release-please:
     runs-on: ubuntu-slim
     steps:
-      - uses: googleapis/release-please-action@v5
+      - uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
