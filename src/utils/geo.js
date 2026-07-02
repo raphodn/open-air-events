@@ -1,7 +1,5 @@
-const toNumber = (value) => {
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : null
-}
+import utils from './utils.js'
+
 
 const getLocationProperties = (locationObject) => {
   return locationObject?.properties || locationObject || {}
@@ -9,16 +7,16 @@ const getLocationProperties = (locationObject) => {
 
 const getLocationOSMLatLng = (locationObject) => {
   if (locationObject?.geometry?.coordinates?.length >= 2) {
-    const lat = toNumber(locationObject.geometry.coordinates[1])
-    const lon = toNumber(locationObject.geometry.coordinates[0])
+    const lat = utils.toNumber(locationObject.geometry.coordinates[1])
+    const lon = utils.toNumber(locationObject.geometry.coordinates[0])
     if (lat !== null && lon !== null) {
       return [lat, lon]
     }
   }
 
   const props = getLocationProperties(locationObject)
-  const lat = toNumber(props.lat ?? props.osm_lat)
-  const lon = toNumber(props.lon ?? props.osm_lon)
+  const lat = utils.toNumber(props.lat ?? props.osm_lat)
+  const lon = utils.toNumber(props.lon ?? props.osm_lon)
   if (lat !== null && lon !== null) {
     return [lat, lon]
   }
