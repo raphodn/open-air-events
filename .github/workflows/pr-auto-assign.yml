@@ -1,3 +1,5 @@
+# https://github.com/toshimaru/auto-author-assign
+
 name: PR auto author assign
 
 on:
@@ -11,4 +13,4 @@ jobs:
   assign-author:
     runs-on: ubuntu-slim
     steps:
-      - uses: toshimaru/auto-author-assign@v3.0.1
+      - uses: toshimaru/auto-author-assign@v3.0.3
