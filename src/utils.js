@@ -25,4 +25,21 @@ const formatDateTimeWithTZ = (dateString) => {
   return `${dateString}:00${tzOffset}`
 }
 
-export { formatDate, formatTime, formatDateTimeWithTZ }
+const toLocalDateTimeString = (date) => {
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+const dateTimeAddHours = (dateTimeLocal, hoursToAdd) => {
+  const date = new Date(dateTimeLocal)
+  date.setHours(date.getHours() + hoursToAdd)
+  return toLocalDateTimeString(date)
+}
+
+export default {
+  formatDate,
+  formatTime,
+  formatDateTimeWithTZ,
+  toLocalDateTimeString,
+  dateTimeAddHours
+}

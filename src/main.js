@@ -3,7 +3,6 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import App from './App.vue'
 import router from './router.js'
-import { createVuetify } from 'vuetify'
 import { vuetify } from './plugins/vuetify.js'
 import 'vuetify/styles'
 
