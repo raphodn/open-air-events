@@ -1,10 +1,10 @@
 <template>
-  <v-card>
-    <v-card-title>{{ event.properties.label }}</v-card-title>
+  <v-card :to="{ name: 'event-details', params: { id: event.properties.id } }" link>
+    <v-card-title v-if="!hideTitle">{{ event.properties.label }}</v-card-title>
     <v-card-text>
       <p>📅 {{ dateUtils.formatDate(event.properties.start) }} ({{ dateUtils.formatTime(event.properties.start) }})</p>
       <p>📍 {{ oedbService.eventLocationFullName(event) }}</p>
-      <p>🔗 <a :href="event.properties.url" target="_blank">plus d'info</a></p>
+      <p>🔗 <a :href="event.properties.url" target="_blank" @click.stop>plus d'info</a></p>
     </v-card-text>
     <v-divider></v-divider>
     <v-card-text class="text-caption text-grey-darken-1">
@@ -22,6 +22,10 @@ const props = defineProps({
   event: {
     type: Object,
     required: true
+  },
+  hideTitle: {
+    type: Boolean,
+    default: false
   }
 })
 </script>

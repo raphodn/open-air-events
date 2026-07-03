@@ -25,12 +25,17 @@ export const useEventsStore = defineStore('events', () => {
     })
   }
 
+  const getEventById = (id) => {
+    return events.value.find(event => event.properties.id === id)
+  }
+
   return {
     events,
     eventsCount,
     eventsLastSyncDate,
     upcomingEvents,
     pastEvents,
-    fetchEvents
+    fetchEvents,
+    getEventById
   }
 })
