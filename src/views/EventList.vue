@@ -21,7 +21,20 @@
           </v-btn>
         </template>
         <v-card min-width="320" class="pa-4">
-          <v-switch
+          <div class="d-flex flex-wrap ga-2 mb-3">
+            <v-chip
+              v-for="preset in datePresetOptions"
+              :key="preset.value"
+              :variant="selectedDatePreset === preset.value ? 'flat' : 'outlined'"
+              color="primary"
+              size="small"
+              @click="toggleDatePreset(preset.value)"
+            >
+              {{ preset.title }}
+            </v-chip>
+          </div>
+
+          <v-checkbox
             v-model="includePast"
             color="primary"
             density="compact"
@@ -85,8 +98,20 @@ const route = useRoute()
 const router = useRouter()
 
 const { events } = storeToRefs(eventsStore)
-const includePast = ref(false)
+const includePast = ref(route.query.past === '1')
 const selectedCountyCode = ref(route.query.county ?? null)
+const selectedDatePreset = ref(route.query.date ?? null)
+
+const datePresetOptions = [
+  { title: 'Aujourd\'hui', value: 'today' },
+  { title: 'Cette semaine', value: 'week' },
+  { title: 'Ce week-end', value: 'weekend' },
+  { title: 'Ce mois-ci', value: 'month' }
+]
+
+const toggleDatePreset = (presetValue) => {
+  selectedDatePreset.value = selectedDatePreset.value === presetValue ? null : presetValue
+}
 
 const countyOptions = computed(() => {
   return departements.map((departement) => {
@@ -103,7 +128,7 @@ const selectedCountyName = computed(() => {
 })
 
 const hasDateFilter = computed(() => {
-  return includePast.value
+  return includePast.value || !!selectedDatePreset.value
 })
 
 const hasLieuFilter = computed(() => {
@@ -112,6 +137,14 @@ const hasLieuFilter = computed(() => {
 
 watch(() => route.query.county, (depCode) => {
   selectedCountyCode.value = depCode ?? null
+})
+
+watch(() => route.query.date, (datePreset) => {
+  selectedDatePreset.value = datePreset ?? null
+})
+
+watch(() => route.query.past, (past) => {
+  includePast.value = past === '1'
 })
 
 watch(selectedCountyCode, (depCode) => {
@@ -126,12 +159,85 @@ watch(selectedCountyCode, (depCode) => {
   router.replace({ query })
 })
 
+watch(selectedDatePreset, (datePreset) => {
+  const query = { ...route.query }
+
+  if (datePreset) {
+    query.date = datePreset
+  } else {
+    delete query.date
+  }
+
+  router.replace({ query })
+})
+
+watch(includePast, (showPast) => {
+  const query = { ...route.query }
+
+  if (showPast) {
+    query.past = '1'
+  } else {
+    delete query.past
+  }
+
+  router.replace({ query })
+})
+
+const getDatePresetRange = (preset) => {
+  if (!preset) {
+    return null
+  }
+
+  const now = new Date()
+
+  if (preset === 'today') {
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+    return { start, end }
+  }
+
+  if (preset === 'week') {
+    const day = now.getDay()
+    const mondayOffset = day === 0 ? -6 : 1 - day
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset)
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 7)
+    return { start, end }
+  }
+
+  if (preset === 'weekend') {
+    const day = now.getDay()
+    const saturdayOffset = day === 0 ? -1 : 6 - day
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + saturdayOffset)
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 2)
+    return { start, end }
+  }
+
+  if (preset === 'month') {
+    const start = new Date(now.getFullYear(), now.getMonth(), 1)
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+    return { start, end }
+  }
+
+  return null
+}
+
 const displayedEvents = computed(() => {
   const now = new Date().getTime()
+  const selectedRange = getDatePresetRange(selectedDatePreset.value)
 
   return events.value.filter((event) => {
-    const isUpcoming = new Date(event.properties.start).getTime() > now
+    const eventStart = new Date(event.properties.start).getTime()
+    const isUpcoming = eventStart > now
     const eventCountyName = event.properties.osm_addr_county
+
+    if (selectedRange) {
+      const rangeStart = selectedRange.start.getTime()
+      const rangeEnd = selectedRange.end.getTime()
+
+      if (eventStart < rangeStart || eventStart >= rangeEnd) {
+        return false
+      }
+    }
 
     if (!includePast.value && !isUpcoming) {
       return false
@@ -145,6 +251,3 @@ const displayedEvents = computed(() => {
   })
 })
 </script>
-
-<style scoped>
-</style>
