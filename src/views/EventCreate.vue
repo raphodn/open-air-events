@@ -186,8 +186,8 @@ const createEvent = async () => {
       router.push('/events')
     })
     .catch(error => {
-      console.error('Erreur lors de la création de l\'événement:', error)
-      alert('Erreur lors de la création de l\'événement.')
+      console.error("Erreur lors de la création de l'événement:", error)
+      alert("Erreur lors de la création de l'événement.")
     })
     .finally(() => {
       isSubmitting.value = false
