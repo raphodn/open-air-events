@@ -88,10 +88,25 @@ const getLocationOSMTag = (locationObject) => {
   return `${key}:${value}`
 }
 
+const getDepartmentCodeFromPostcode = (postcode) => {
+  const code = String(postcode ?? '').trim().toUpperCase()
+
+  if (!code) {
+    return ''
+  }
+
+  if (code.startsWith('97') || code.startsWith('98')) {
+    return code.substring(0, 3)
+  }
+
+  return code.substring(0, 2)
+}
+
 export default {
   getMapBounds,
   getLocationOSMTitle,
   getLocationOSMUniqueId,
   getLocationOSMTag,
   getLocationOSMLatLng,
+  getDepartmentCodeFromPostcode,
 }
