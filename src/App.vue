@@ -4,22 +4,32 @@
 
     <v-main>
       <v-container>
-        <router-view />
+        <v-row v-if="isPreloadingEvents">
+          <v-col align="center">
+            <v-progress-circular indeterminate color="primary" />
+          </v-col>
+      </v-row>
+        <router-view v-else />
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import Header from './components/Header.vue'
 import oedbService from './services/openeventdatabase.js'
 
-const preloadEvents = () => {
-  oedbService.getEvents()
-    .catch((error) => {
-      console.error('Error preloading events on app startup:', error)
-    })
+const isPreloadingEvents = ref(true)
+
+const preloadEvents = async () => {
+  try {
+    await oedbService.getEvents()
+  } catch (error) {
+    console.error('Error preloading events on app startup:', error)
+  } finally {
+    isPreloadingEvents.value = false
+  }
 }
 
 onMounted(() => {
