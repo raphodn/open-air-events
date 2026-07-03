@@ -1,6 +1,6 @@
 <template>
   <v-card :to="{ name: 'event-details', params: { id: event.properties.id } }" link>
-    <v-card-title v-if="!hideTitle">{{ event.properties.label }}</v-card-title>
+    <v-card-title>{{ event.properties.label }}</v-card-title>
     <v-card-text>
       <p>📅 {{ dateUtils.formatDate(event.properties.start) }} ({{ dateUtils.formatTime(event.properties.start) }})</p>
       <p>📍 {{ oedbService.eventLocationFullName(event) }}</p>
@@ -22,10 +22,6 @@ const props = defineProps({
   event: {
     type: Object,
     required: true
-  },
-  hideTitle: {
-    type: Boolean,
-    default: false
   }
 })
 </script>

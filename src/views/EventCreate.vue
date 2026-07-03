@@ -1,7 +1,5 @@
 <template>
-  <h1 class="text-h5 font-weight-bold">Ajouter un événement</h1>
-
-  <v-alert class="mt-4" type="info" variant="outlined" density="compact">
+  <v-alert type="info" variant="outlined" density="compact">
     La base de données utilisée est <a :href="constants.OEDB_WIKI_URL" target="_blank">OpenEventDatabase</a> (OEDB)
   </v-alert>
 
