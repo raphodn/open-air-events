@@ -59,17 +59,6 @@ const getEvents = ({ forceRefresh = false } = {}) => {
   return eventsRequestPromise
 }
 
-const getEventsCount = () => {
-  if (eventsCache && eventsCache.features) {
-    return eventsCache.features.length
-  }
-  return 0
-}
-
-const getEventsLastSyncDate = () => {
-  return eventsLastSyncDate
-}
-
 const clearEventsCache = () => {
   eventsCache = null
   eventsLastSyncDate = null
@@ -134,8 +123,6 @@ const eventLocationFullName = (event) => {
 export default {
   getEventsFromJSON,
   getEvents,
-  getEventsCount,
-  getEventsLastSyncDate,
   clearEventsCache,
   createEvent,
   eventLocationFullName
