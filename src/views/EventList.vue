@@ -106,6 +106,7 @@ const datePresetOptions = [
   { title: "Aujourd'hui", value: 'today' },
   { title: 'Cette semaine', value: 'week' },
   { title: 'Ce week-end', value: 'weekend' },
+  { title: 'La semaine prochaine', value: 'week-next' },
   { title: 'Ce mois-ci', value: 'month' }
 ]
 
@@ -209,6 +210,14 @@ const getDatePresetRange = (preset) => {
     const saturdayOffset = day === 0 ? -1 : 6 - day
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + saturdayOffset)
     const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 2)
+    return { start, end }
+  }
+
+  if (preset === 'week-next') {
+    const day = now.getDay()
+    const mondayOffset = day === 0 ? -6 : 1 - day
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset + 7)
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 7)
     return { start, end }
   }
 
