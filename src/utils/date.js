@@ -1,11 +1,55 @@
+/**
+ * Input: date string in the format "YYYY-MM-DDTHH:mm"
+ * Output: date string in the format "DD/MM/YYYY"
+ */
 const formatDate = (dateString) => {
   const date = new Date(dateString)
-  return date.toLocaleDateString()
+  return date.toLocaleDateString('fr')
 }
 
+/**
+ * Input: date string in the format "YYYY-MM-DDTHH:mm"
+ * Output: time string in the format "HH:mm"
+ */
 const formatTime = (dateString) => {
   const date = new Date(dateString)
-  return date.toLocaleTimeString()
+  return date.toLocaleTimeString('fr', { hour: '2-digit', minute: '2-digit' })
+}
+
+/**
+ * Input: date string in the format "YYYY-MM-DDTHH:mm"
+ * Output: date string in the format "DD/MM/YYYY HH:mm"
+ */
+const formatDateTime = (dateString) => {
+  const date = new Date(dateString)
+  return date.toLocaleString('fr', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
+
+const relativeTimeFormatter = new Intl.RelativeTimeFormat('fr', {
+  numeric: 'always'
+})
+
+const formatRelativeTime = (dateInput) => {
+  const date = new Date(dateInput)
+
+  if (Number.isNaN(date.getTime())) {
+    return ''
+  }
+
+  const elapsedSeconds = Math.round((date.getTime() - Date.now()) / 1000)
+  const ranges = [
+    { unit: 'year', seconds: 60 * 60 * 24 * 365 },
+    { unit: 'month', seconds: 60 * 60 * 24 * 30 },
+    { unit: 'day', seconds: 60 * 60 * 24 },
+    { unit: 'hour', seconds: 60 * 60 },
+    { unit: 'minute', seconds: 60 },
+    { unit: 'second', seconds: 1 }
+  ]
+
+  const range = ranges.find((item) => Math.abs(elapsedSeconds) >= item.seconds) ?? ranges[ranges.length - 1]
+  const value = Math.round(elapsedSeconds / range.seconds)
+
+  return relativeTimeFormatter.format(value, range.unit)
 }
 
 /**
@@ -39,6 +83,8 @@ const dateTimeAddHours = (dateTimeLocal, hoursToAdd) => {
 export default {
   formatDate,
   formatTime,
+  formatDateTime,
+  formatRelativeTime,
   formatDateTimeWithTZ,
   toLocalDateTimeString,
   dateTimeAddHours
