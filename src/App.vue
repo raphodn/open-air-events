@@ -12,24 +12,28 @@
         <router-view v-else />
       </v-container>
     </v-main>
+
+    <Footer />
   </v-app>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
 import Header from './components/Header.vue'
-import oedbService from './services/openeventdatabase.js'
+import Footer from './components/Footer.vue'
+import { useEventsStore } from './stores/events.js'
 
+const eventsStore = useEventsStore()
 const isPreloadingEvents = ref(true)
 
-const preloadEvents = async () => {
-  try {
-    await oedbService.getEvents()
-  } catch (error) {
-    console.error('Error preloading events on app startup:', error)
-  } finally {
-    isPreloadingEvents.value = false
-  }
+const preloadEvents = () => {
+  eventsStore.fetchEvents()
+    .catch((error) => {
+      console.error('Error preloading events on app startup:', error)
+    })
+    .finally(() => {
+      isPreloadingEvents.value = false
+    })
 }
 
 onMounted(() => {
