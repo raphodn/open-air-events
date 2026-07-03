@@ -48,7 +48,11 @@ const getEvents = ({ forceRefresh = false } = {}) => {
 
   eventsRequestPromise = fetchEvents()
     .then((data) => {
+      // order by start date ascending
+      data.features.sort((a, b) => new Date(a.properties.start) - new Date(b.properties.start))
+      // cache the result
       eventsCache = data
+      // update the last sync date
       eventsLastSyncDate = new Date()
       return data
     })
