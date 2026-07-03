@@ -8,8 +8,11 @@
           <v-col align="center">
             <v-progress-circular indeterminate color="primary" />
           </v-col>
-      </v-row>
-        <router-view v-else />
+        </v-row>
+        <template v-else>
+          <Breadcrumbs />
+          <router-view />
+        </template>
       </v-container>
     </v-main>
 
@@ -20,6 +23,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import Header from './components/Header.vue'
+import Breadcrumbs from './components/Breadcrumbs.vue'
 import Footer from './components/Footer.vue'
 import { useEventsStore } from './stores/events.js'
 
