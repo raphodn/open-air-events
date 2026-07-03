@@ -103,7 +103,7 @@ const selectedCountyCode = ref(route.query.county ?? null)
 const selectedDatePreset = ref(route.query.date ?? null)
 
 const datePresetOptions = [
-  { title: 'Aujourd\'hui', value: 'today' },
+  { title: "Aujourd'hui", value: 'today' },
   { title: 'Cette semaine', value: 'week' },
   { title: 'Ce week-end', value: 'weekend' },
   { title: 'Ce mois-ci', value: 'month' }

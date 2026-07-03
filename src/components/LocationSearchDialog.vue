@@ -101,7 +101,7 @@ const performLocationSearch = async () => {
   .catch(error => {
     console.error('Error searching for location:', error)
     searchResults.value = []
-    alert('Erreur lors de la recherche d\'adresse.')
+    alert("Erreur lors de la recherche d'adresse.")
   })
   .finally(() => {
     isSearching.value = false
