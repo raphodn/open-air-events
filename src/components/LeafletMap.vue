@@ -47,14 +47,14 @@ const props = defineProps({
   showActions: {
     type: Boolean,
     default: false
-  }
+  },
 })
 
 const emit = defineEmits(['locationSelected'])
 
 const mapRef = ref(null)
 const map = ref(null)
-const mapZoom = ref(5)
+const mapZoom = ref(12)  // fitMapToBounds will override this if there are multiple locations
 const mapCenter = ref([45, 5])
 const mapBounds = ref(null)
 const display = useDisplay()
@@ -75,8 +75,15 @@ const tiles = computed(() => {
   return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 })
 
+// Fit the map to the bounds of the locations
+// If there is only one location, set the map view to that location with the default zoom
 const fitMapToBounds = () => {
   if (map.value && mapBounds.value?.length) {
+    if (props.locations.length === 1) {
+      map.value.setView(getLocationOSMLatLng(props.locations[0]), mapZoom.value)
+      return
+    }
+
     map.value.fitBounds(mapBounds.value)
   }
 }
