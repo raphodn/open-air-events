@@ -77,6 +77,7 @@ const createEvent = (eventData) => {
   }
   // manage location
   // map the photon location object to the event location object
+  const eventCoordinates = [eventData.location.lon, eventData.location.lat]
   const eventLocation = openstreetmapService.photonLocationToEventLocation(eventData.location)
   const eventProperties = { ...eventData, ...eventTimestamps, ...eventLocation }
   delete eventProperties.location // Remove the original location object
@@ -85,7 +86,7 @@ const createEvent = (eventData) => {
     'type': 'Feature',
     'geometry': {
       'type': 'Point',
-      'coordinates': [eventProperties.lon, eventProperties.lat]
+      'coordinates': eventCoordinates
     },
     'properties': {
       'type': 'scheduled',

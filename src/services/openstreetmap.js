@@ -38,11 +38,10 @@ const photonLocationToEventLocation = (location) => {
     osm_addr_street: location.properties.street || '',
     osm_addr_postcode: location.properties.postcode || '',
     osm_addr_city: location.properties.city || '',
+    osm_addr_county: location.properties.county || '',
     osm_addr_state: location.properties.state || '',
     osm_addr_country: location.properties.country || '',
     osm_addr_countrycode: location.properties.countrycode || '',
-    lat: location.geometry.coordinates[1],
-    lon: location.geometry.coordinates[0],
   }
 }
 
