@@ -1,20 +1,27 @@
 import constants from '@/constants.js'
-import eventsData from '@/data/events.json'
+import eventsJSON from '@/data/events.json'
 import dateUtils from '../utils/date.js'
 import openstreetmapService from '../services/openstreetmap.js'
 
 
-const OEDB_API_URL = 'https://api.openeventdatabase.org'
+// only 2026 for now
 const OEDB_START_STOP = 'start=2026-01-01T00:00&stop=2026-12-31T23:59'
 // const OEDB_START_STOP = '?when=NEXT365DAYS'
 const OEDB_LIMIT = 1000
 
+let eventsCache = null
+let eventsLastSyncDate = null
+let eventsRequestPromise = null
+
 
 const getEventsFromJSON = () => {
-  return Promise.resolve(eventsData)
+  return Promise.resolve(eventsJSON)
 }
 
-const getEvents = () => {
+/**
+ * Fetch events from the OpenEventDatabase API
+ */
+const fetchEvents = () => {
   return fetch(`${constants.OEDB_API_URL}/event?what=${constants.OEDB_WHAT_DEFAULT}&${OEDB_START_STOP}&limit=${OEDB_LIMIT}`, {
     method: 'GET',
     headers: {
@@ -23,6 +30,42 @@ const getEvents = () => {
     }
   })
   .then(response => response.json())
+}
+
+/**
+ * Get events from the OpenEventDatabase API, with caching and optional force refresh.
+ */
+const getEvents = ({ forceRefresh = false } = {}) => {
+  // Return the last successful payload immediately when cache is warm.
+  if (!forceRefresh && eventsCache) {
+    return Promise.resolve(eventsCache)
+  }
+
+  // Reuse the ongoing fetch to avoid duplicate concurrent requests.
+  if (!forceRefresh && eventsRequestPromise) {
+    return eventsRequestPromise
+  }
+
+  eventsRequestPromise = fetchEvents()
+    .then((data) => {
+      eventsCache = data
+      eventsLastSyncDate = new Date()
+      return data
+    })
+    .finally(() => {
+      eventsRequestPromise = null
+    })
+
+  return eventsRequestPromise
+}
+
+const getEventsLastSyncDate = () => {
+  return eventsLastSyncDate
+}
+
+const clearEventsCache = () => {
+  eventsCache = null
+  eventsLastSyncDate = null
 }
 
 const createEvent = (eventData) => {
@@ -66,6 +109,10 @@ const createEvent = (eventData) => {
 
     return response.json()
   })
+  .then((createdEvent) => {
+    clearEventsCache()
+    return createdEvent
+  })
 }
 
 const eventLocationFullName = (event) => {
@@ -80,6 +127,8 @@ const eventLocationFullName = (event) => {
 export default {
   getEventsFromJSON,
   getEvents,
+  getEventsLastSyncDate,
+  clearEventsCache,
   createEvent,
   eventLocationFullName
 }
