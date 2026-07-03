@@ -23,38 +23,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import EventCard from '../components/EventCard.vue'
-import oedbService from '../services/openeventdatabase.js'
+import { useEventsStore } from '../stores/events.js'
 
-const events = ref([])
-const eventsCount = ref(0)
+const eventsStore = useEventsStore()
+const { events, eventsCount, upcomingEvents, pastEvents } = storeToRefs(eventsStore)
 
-const loadEvents = () => {
-  oedbService.getEvents()
-    .then(data => {
-      events.value = data.features
-      eventsCount.value = data.count
-    })
-    .catch(error => {
-      console.error('Error loading events:', error)
-    })
-}
-
-const upcomingEvents = computed(() => {
-  const now = new Date()
-  return events.value.filter(event => new Date(event.properties.start).getTime() > now.getTime())
-})
-const pastEvents = computed(() => {
-  const now = new Date()
-  return events.value.filter(event => new Date(event.properties.start).getTime() <= now.getTime())
-})
 const recentlyAddedEvents = computed(() => {
-  return events.value.sort((a, b) => new Date(b.properties.createdate).getTime() - new Date(a.properties.createdate).getTime()).slice(0, 4)
-})
-
-onMounted(() => {
-  loadEvents()
+  return [...events.value].sort((a, b) => new Date(b.properties.createdate).getTime() - new Date(a.properties.createdate).getTime()).slice(0, 4)
 })
 </script>
 
