@@ -8,10 +8,9 @@
 
   <h2 class="text-h6 font-weight-bold">{{ eventsCount }} événements recencés</h2>
 
-  <p>{{ upcomingEvents.length }} à venir. {{ pastEvents.length }} passés.</p>
   <v-btn color="primary" to="/events">Voir la liste</v-btn>
+  <p>{{ upcomingEvents.length }} à venir. {{ pastEvents.length }} passés.</p>
 
-  <br />
   <br />
 
   <h2 class="text-h6 font-weight-bold">Derniers événements ajoutés</h2>
