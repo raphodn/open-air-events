@@ -52,6 +52,19 @@ const formatRelativeTime = (dateInput) => {
   return relativeTimeFormatter.format(value, range.unit)
 }
 
+const dateIsInThePast = (dateInput) => {
+  return new Date(dateInput).getTime() < Date.now()
+}
+
+const dateIsToday = (dateInput) => {
+  const eventDate = new Date(dateInput)
+  const now = new Date()
+
+  return eventDate.getFullYear() === now.getFullYear()
+    && eventDate.getMonth() === now.getMonth()
+    && eventDate.getDate() === now.getDate()
+}
+
 /**
  * Input: date string in the format "YYYY-MM-DDTHH:mm"
  * Output: date string in the format "YYYY-MM-DDTHH:mm:ss±HHMM" (includes the local timezone offset)
@@ -85,6 +98,8 @@ export default {
   formatTime,
   formatDateTime,
   formatRelativeTime,
+  dateIsInThePast,
+  dateIsToday,
   formatDateTimeWithTZ,
   toLocalDateTimeString,
   dateTimeAddHours

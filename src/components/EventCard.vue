@@ -9,7 +9,8 @@
     <v-card-text class="flex-grow-1">
       <p class="d-flex align-center ga-2">
         <span>📅 {{ dateUtils.formatDate(event.properties.start) }} à {{ dateUtils.formatTime(event.properties.start) }}</span>
-        <v-chip v-if="isPastEvent" size="x-small" color="grey" variant="flat" label>Passé</v-chip>
+        <v-chip v-if="isTodayEvent" size="x-small" color="primary" variant="tonal" label>Aujourd'hui</v-chip>
+        <v-chip v-else-if="isPastEvent" size="x-small" color="grey" variant="flat" label>Passé</v-chip>
       </p>
       <p>📍 {{ oedbService.eventLocationFullName(event) }}</p>
       <p>🔗 <a :href="event.properties.url" target="_blank" @click.stop>plus d'info</a></p>
@@ -34,7 +35,11 @@ const props = defineProps({
 })
 
 const isPastEvent = computed(() => {
-  return new Date(props.event.properties.start).getTime() < Date.now()
+  return dateUtils.dateIsInThePast(props.event.properties.start)
+})
+
+const isTodayEvent = computed(() => {
+  return dateUtils.dateIsToday(props.event.properties.start)
 })
 </script>
 
