@@ -31,7 +31,7 @@
       <v-col cols="12">
         <v-text-field
           v-model="eventForm.label"
-          label="Nom de l'événement *"
+          label="Nom du film projeté *"
           hide-details="auto"
           :rules="[rules.required]"
           required
