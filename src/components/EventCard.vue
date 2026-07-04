@@ -2,8 +2,8 @@
   <v-card
     class="h-100 d-flex flex-column"
     :class="{ 'event-card--past': isPastEvent }"
-    :to="{ name: 'event-details', params: { id: event.properties.id } }"
-    link
+    :to="cardTo"
+    :link="!props.readonly"
   >
     <v-card-title :title="event.properties.label">{{ event.properties.label }}</v-card-title>
     <v-card-text class="flex-grow-1">
@@ -37,7 +37,19 @@ const props = defineProps({
   event: {
     type: Object,
     required: true
+  },
+  readonly: {
+    type: Boolean,
+    default: false
   }
+})
+
+const cardTo = computed(() => {
+  if (props.readonly) {
+    return undefined
+  }
+
+  return { name: 'event-details', params: { id: props.event.properties.id } }
 })
 
 const isPastEvent = computed(() => {
