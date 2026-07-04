@@ -33,8 +33,6 @@ const photonLocationToEventCoordinates = (location) => {
 
 const photonLocationToEventLocation = (location) => {
   return {
-    lat: location.geometry.coordinates[1],
-    lon: location.geometry.coordinates[0],
     osm_id: location.properties.osm_id,
     osm_type: location.properties.osm_type,
     osm_key: location.properties.osm_key,
