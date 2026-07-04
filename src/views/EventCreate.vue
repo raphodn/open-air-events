@@ -31,7 +31,7 @@
       <v-col cols="12">
         <v-text-field
           v-model="eventForm.label"
-          label="Nom de l'événement *"
+          label="Nom du film projeté *"
           hide-details="auto"
           :rules="[rules.required]"
           required
@@ -49,6 +49,15 @@
           :rules="[rules.required, rules.url]"
           required
         ></v-text-field>
+        <v-alert
+          v-if="duplicateUrlEvent"
+          type="warning"
+          variant="outlined"
+          density="compact"
+          class="mt-2"
+        >
+          Cette URL existe deja pour l'evenement "{{ duplicateUrlEvent.properties.label }}".
+        </v-alert>
       </v-col>
     </v-row>
 
@@ -112,12 +121,17 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useEventsStore } from '../stores/events.js'
 import oedbService from '../services/openeventdatabase.js'
 import LocationSearchDialog from '../components/LocationSearchDialog.vue'
 import LocationResult from '../components/LocationResult.vue'
 import constants from '../constants'
+import utils from '../utils/utils.js'
 
 const router = useRouter()
+const eventsStore = useEventsStore()
+const { events } = storeToRefs(eventsStore)
 
 // Init the form data
 const eventForm = ref({
@@ -161,6 +175,18 @@ const eventFormFilled = computed(() => {
   return requiredFields.every(field => !!eventForm.value[field])
 })
 
+const duplicateUrlEvent = computed(() => {
+  const normalizedUrl = utils.normalizeUrl(eventForm.value.url)
+
+  if (!normalizedUrl) {
+    return null
+  }
+
+  return events.value.find((event) => {
+    return utils.normalizeUrl(event.properties.url) === normalizedUrl
+  }) ?? null
+})
+
 // Location selection
 const openLocationDialog = () => {
   showLocationDialog.value = true
@@ -170,7 +196,7 @@ const selectLocation = (location) => {
 }
 
 // Function to create event
-const createEvent = async () => {
+const createEvent = () => {
   if (!eventFormFilled.value) {
     alert('Veuillez corriger les erreurs avant de soumettre.')
     return
