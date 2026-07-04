@@ -77,7 +77,7 @@ const createEvent = (eventData) => {
   }
   // manage location
   // map the photon location object to the event location object
-  const eventCoordinates = [eventData.location.lon, eventData.location.lat]
+  const eventCoordinates = openstreetmapService.photonLocationToEventCoordinates(eventData.location)
   const eventLocation = openstreetmapService.photonLocationToEventLocation(eventData.location)
   const eventProperties = { ...eventData, ...eventTimestamps, ...eventLocation }
   delete eventProperties.location // Remove the original location object
