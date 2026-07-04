@@ -1,6 +1,7 @@
 import constants from '@/constants.js'
 import eventsJSON from '@/data/events.json'
 import dateUtils from '../utils/date.js'
+import geoUtils from '../utils/geo.js'
 import openstreetmapService from '../services/openstreetmap.js'
 
 
@@ -116,13 +117,16 @@ const createEvent = (eventData) => {
   })
 }
 
+// Example: Salle des fêtes, Route de la Pierre de Dîme, Saint-Jean-d'Hérans (38)
 const eventLocationFullName = (event) => {
   let name = event.properties.osm_name || ''
   let housenumber = event.properties.osm_addr_housenumber || ''
   let street = event.properties.osm_addr_street || ''
   let city = event.properties.osm_addr_city || ''
-  let country = event.properties.osm_addr_country || ''
-  return [name, street, city, country].filter(Boolean).join(', ')
+  let postcode = event.properties.osm_addr_postcode || ''
+  let cityWithPostcodeShortPart = city ? `${city} ${postcode ? `(${geoUtils.getDepartmentCodeFromPostcode(postcode)})` : ''}` : ''
+  // let country = event.properties.osm_addr_country || ''
+  return [name, street, cityWithPostcodeShortPart].filter(Boolean).join(', ')
 }
 
 export default {
