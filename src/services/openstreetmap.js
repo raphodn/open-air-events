@@ -51,11 +51,41 @@ const photonLocationToEventLocation = (location) => {
   }
 }
 
+const eventToPhotonLocation = (event) => {
+  const properties = event?.properties || {}
+  const lon = Number(properties.lon ?? event?.geometry?.coordinates?.[0] ?? 0)
+  const lat = Number(properties.lat ?? event?.geometry?.coordinates?.[1] ?? 0)
+
+  return {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [lon, lat]
+    },
+    properties: {
+      osm_id: properties.osm_id,
+      osm_type: properties.osm_type,
+      osm_key: properties.osm_key,
+      osm_value: properties.osm_value,
+      name: properties.osm_name || '',
+      housenumber: properties.osm_addr_housenumber || '',
+      street: properties.osm_addr_street || '',
+      postcode: properties.osm_addr_postcode || '',
+      city: properties.osm_addr_city || '',
+      county: properties.osm_addr_county || '',
+      state: properties.osm_addr_state || '',
+      country: properties.osm_addr_country || '',
+      countrycode: properties.osm_addr_countrycode || ''
+    }
+  }
+}
+
 export default {
   photonSearch,
   photonLocationFullName,
   photonLocationType,
   photonLocationID,
   photonLocationToEventCoordinates,
-  photonLocationToEventLocation
+  photonLocationToEventLocation,
+  eventToPhotonLocation
 }
