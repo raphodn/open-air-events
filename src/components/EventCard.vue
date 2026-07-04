@@ -14,6 +14,12 @@
       </p>
       <p>📍 {{ oedbService.eventLocationFullName(event) }}</p>
       <p>🔗 <a :href="event.properties.url" target="_blank" @click.stop>plus d'info</a></p>
+      <p v-if="event.properties.tags">
+        <span class="chip-group">
+          <span>🏷</span>
+          <v-chip v-for="tag in event.properties.tags" :key="tag" size="x-small" variant="tonal" label>{{ tag }}</v-chip>
+        </span>
+      </p>
     </v-card-text>
     <v-divider></v-divider>
     <v-card-text class="text-caption text-grey-darken-1" style="max-height:50px;">

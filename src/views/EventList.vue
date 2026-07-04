@@ -47,6 +47,7 @@
       <v-menu :close-on-content-click="false">
         <template #activator="{ props }">
           <v-btn
+            class="mr-2"
             v-bind="props"
             color="primary"
             :variant="hasLieuFilter ? 'flat' : 'outlined'"
@@ -66,6 +67,32 @@
             density="compact"
             hide-details
             label="Département"
+          />
+        </v-card>
+      </v-menu>
+
+      <v-menu :close-on-content-click="false">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            color="primary"
+            :variant="hasInfoFilter ? 'flat' : 'outlined'"
+            :active="hasInfoFilter"
+            size="small"
+            prepend-icon="mdi-information-outline"
+            append-icon="mdi-menu-down"
+          >
+            Info
+          </v-btn>
+        </template>
+        <v-card min-width="320" class="pa-4">
+          <v-select
+            v-model="selectedTag"
+            :items="tagOptions"
+            clearable
+            density="compact"
+            hide-details
+            label="Tag"
           />
         </v-card>
       </v-menu>
@@ -101,6 +128,7 @@ const { events } = storeToRefs(eventsStore)
 const includePast = ref(route.query.past === '1')
 const selectedCountyCode = ref(route.query.county ?? null)
 const selectedDatePreset = ref(route.query.date ?? null)
+const selectedTag = ref(route.query.tag ?? null)
 
 const datePresetOptions = [
   { title: "Aujourd'hui", value: 'today' },
@@ -128,12 +156,34 @@ const selectedCountyName = computed(() => {
   return county?.nom ?? null
 })
 
+const tagOptions = computed(() => {
+  const tags = events.value.flatMap((event) => {
+    const eventTags = event?.properties?.tags
+
+    if (Array.isArray(eventTags)) {
+      return eventTags
+    }
+
+    if (typeof eventTags === 'string' && eventTags.trim()) {
+      return [eventTags]
+    }
+
+    return []
+  })
+
+  return [...new Set(tags.map((tag) => String(tag).trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b))
+})
+
 const hasDateFilter = computed(() => {
   return includePast.value || !!selectedDatePreset.value
 })
 
 const hasLieuFilter = computed(() => {
   return !!selectedCountyCode.value
+})
+
+const hasInfoFilter = computed(() => {
+  return !!selectedTag.value
 })
 
 watch(() => route.query.county, (depCode) => {
@@ -146,6 +196,10 @@ watch(() => route.query.date, (datePreset) => {
 
 watch(() => route.query.past, (past) => {
   includePast.value = past === '1'
+})
+
+watch(() => route.query.tag, (tag) => {
+  selectedTag.value = tag ?? null
 })
 
 watch(selectedCountyCode, (depCode) => {
@@ -179,6 +233,18 @@ watch(includePast, (showPast) => {
     query.past = '1'
   } else {
     delete query.past
+  }
+
+  router.replace({ query })
+})
+
+watch(selectedTag, (tag) => {
+  const query = { ...route.query }
+
+  if (tag) {
+    query.tag = tag
+  } else {
+    delete query.tag
   }
 
   router.replace({ query })
@@ -238,6 +304,9 @@ const displayedEvents = computed(() => {
     const eventStart = new Date(event.properties.start).getTime()
     const isUpcoming = eventStart > now
     const eventCountyName = event.properties.osm_addr_county
+    const eventTags = Array.isArray(event.properties.tags)
+      ? event.properties.tags
+      : (typeof event.properties.tags === 'string' && event.properties.tags.trim() ? [event.properties.tags] : [])
 
     if (selectedRange) {
       const rangeStart = selectedRange.start.getTime()
@@ -253,6 +322,10 @@ const displayedEvents = computed(() => {
     }
 
     if (selectedCountyCode.value && eventCountyName !== selectedCountyName.value) {
+      return false
+    }
+
+    if (selectedTag.value && !eventTags.includes(selectedTag.value)) {
       return false
     }
 

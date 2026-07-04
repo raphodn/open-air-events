@@ -28,7 +28,7 @@
 
     <h2 class="text-subtitle-1 font-weight-bold">Informations</h2>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="12" md="6">
         <v-text-field
           v-model="eventForm.label"
           label="Nom du film projeté *"
@@ -36,6 +36,21 @@
           :rules="[rules.required]"
           required
         ></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-combobox
+          v-model="eventForm.tags"
+          :items="existingTags"
+          label="Tags"
+          multiple
+          chips
+          closable-chips
+          clearable
+          hide-details="auto"
+          hint="Optionnel. Par exemple le nom du festival."
+          persistent-hint
+        ></v-combobox>
       </v-col>
     </v-row>
 
@@ -137,6 +152,7 @@ const { events } = storeToRefs(eventsStore)
 const eventForm = ref({
   what: constants.OEDB_WHAT_LIST[0].key,  // 'culture.cinema.outdoor'
   label: '',
+  tags: [],
   url: '',
   start: '',
   // stop: '',  // will be automatically set to +2 hours
@@ -173,6 +189,24 @@ const rules = reactive({
 const eventFormFilled = computed(() => {
   const requiredFields = ['what', 'label', 'url', 'start', 'location']
   return requiredFields.every(field => !!eventForm.value[field])
+})
+
+const existingTags = computed(() => {
+  const tags = events.value.flatMap((event) => {
+    const eventTags = event?.properties?.tags
+
+    if (Array.isArray(eventTags)) {
+      return eventTags
+    }
+
+    if (typeof eventTags === 'string' && eventTags.trim()) {
+      return [eventTags]
+    }
+
+    return []
+  })
+
+  return [...new Set(tags.map((tag) => String(tag).trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b))
 })
 
 const duplicateUrlEvent = computed(() => {
