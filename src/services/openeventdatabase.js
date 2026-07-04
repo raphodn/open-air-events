@@ -69,32 +69,36 @@ const clearEventsCache = () => {
   eventsLastSyncDate = null
 }
 
-const createEvent = (eventData) => {
-  // manage timestamps
-  // add stop key & and TZ
+const buildEventPayload = (eventData, existingEvent = null) => {
   const eventTimestamps = {
     start: dateUtils.formatDateTimeWithTZ(eventData.start),
     stop: dateUtils.formatDateTimeWithTZ(dateUtils.dateTimeAddHours(eventData.start, 2)) // +2 hours
   }
-  // manage location
+
   // map the photon location object to the event location object
   const eventCoordinates = openstreetmapService.photonLocationToEventCoordinates(eventData.location)
   const eventLocation = openstreetmapService.photonLocationToEventLocation(eventData.location)
   const eventProperties = { ...eventData, ...eventTimestamps, ...eventLocation }
+  const baseProperties = existingEvent?.properties ? { ...existingEvent.properties } : {}
+
   delete eventProperties.location // Remove the original location object
-  // build the payload (geoJSON)
-  const payload = {
-    'type': 'Feature',
-    'geometry': {
-      'type': 'Point',
-      'coordinates': eventCoordinates
+
+  return {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: eventCoordinates
     },
-    'properties': {
-      'type': 'scheduled',
-      // 'what': constants.OEDB_WHAT_DEFAULT,  // already provided by eventData
+    properties: {
+      type: 'scheduled',
+      ...baseProperties,
       ...eventProperties
     }
   }
+}
+
+const createEvent = (eventData) => {
+  const payload = buildEventPayload(eventData)
 
   return fetch(`${constants.OEDB_API_URL}/event`, {
     method: 'POST',
@@ -117,6 +121,37 @@ const createEvent = (eventData) => {
   })
 }
 
+const updateEvent = (existingEvent, eventData) => {
+  const eventId = existingEvent?.properties?.id
+
+  if (!eventId) {
+    return Promise.reject(new Error('Missing event id'))
+  }
+
+  const payload = buildEventPayload(eventData, existingEvent)
+  delete payload.properties.id
+
+  return fetch(`${constants.OEDB_API_URL}/event/${eventId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      // 'User-Agent': 'CinéPleinAir'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then((response) => {
+    if (response.status !== 200) {
+      throw new Error(`Erreur: ${response.status}`)
+    }
+
+    return response.json()
+  })
+  .then((updatedEvent) => {
+    clearEventsCache()
+    return updatedEvent
+  })
+}
+
 // Example: Salle des fêtes, Route de la Pierre de Dîme, Saint-Jean-d'Hérans (38)
 const eventLocationFullName = (event) => {
   let name = event.properties.osm_name || ''
@@ -134,5 +169,6 @@ export default {
   getEvents,
   clearEventsCache,
   createEvent,
+  updateEvent,
   eventLocationFullName
 }
