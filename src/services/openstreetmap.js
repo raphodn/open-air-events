@@ -27,8 +27,14 @@ const photonLocationID = (location) => {
   return `${location.osm_type}:${location.osm_id}`
 }
 
+const photonLocationToEventCoordinates = (location) => {
+  return [location.geometry.coordinates[0], location.geometry.coordinates[1]]
+}
+
 const photonLocationToEventLocation = (location) => {
   return {
+    lat: location.geometry.coordinates[1],
+    lon: location.geometry.coordinates[0],
     osm_id: location.properties.osm_id,
     osm_type: location.properties.osm_type,
     osm_key: location.properties.osm_key,
@@ -50,5 +56,6 @@ export default {
   photonLocationFullName,
   photonLocationType,
   photonLocationID,
+  photonLocationToEventCoordinates,
   photonLocationToEventLocation
 }

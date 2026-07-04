@@ -181,7 +181,7 @@ const createEvent = async () => {
   // create the event
   oedbService.createEvent(eventForm.value)
     .then(response => {
-      console.log(response)
+      console.log("Événement créé avec succès:", response)
       alert('Événement créé avec succès !')
       router.push('/events')
     })
