@@ -1,6 +1,6 @@
 {
   "name": "open-air-events",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Carte des cinéma en plein air",
   "main": "index.js",
   "repository": "https://github.com/raphodn/open-air-events",
