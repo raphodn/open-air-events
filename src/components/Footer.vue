@@ -3,7 +3,7 @@
     <v-row no-gutters>
       <v-col class="text-center">
         <p>
-          {{ eventsCount }} événements.
+          {{ eventsCount }} séances.
           <br v-if="!display.smAndUp.value" />
           Dernière mise à jour {{ relativeLastSyncDate }}.
         </p>

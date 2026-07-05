@@ -25,7 +25,7 @@
       <v-col cols="12" md="6">
         <v-text-field
           v-model="eventForm.label"
-          label="Nom du film projete *"
+          label="Film projeté *"
           hide-details="auto"
           :rules="[rules.required]"
           required
@@ -52,7 +52,7 @@
       <v-col cols="12">
         <v-text-field
           v-model="eventForm.url"
-          label="Lien vers l'evenement *"
+          label="Lien vers les détails de la séance *"
           hint="https://www.example.com"
           persistent-hint
           :rules="[rules.required, rules.url]"
@@ -66,7 +66,7 @@
           density="compact"
           class="mt-2"
         >
-          Cette URL existe deja pour l'evenement "{{ duplicateUrlEvent.properties.label }}".
+          Cette URL existe deja pour la séance "{{ duplicateUrlEvent.properties.label }}".
         </v-alert>
       </v-col>
     </v-row>
@@ -103,27 +103,20 @@
           :location="eventForm.location.properties"
         />
 
-        <p v-else class="text-error">Aucun lieu selectionne</p>
+        <p v-else class="text-error">Aucun lieu sélectionné</p>
       </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="12">
         <v-btn
+          :block="display.smAndDown.value"
           color="primary"
           type="submit"
           :disabled="!eventFormFilled"
           :loading="isSubmitting"
         >
           {{ submitLabel }}
-        </v-btn>
-
-        <v-btn
-          variant="text"
-          class="ml-2"
-          @click="emit('cancel')"
-        >
-          Annuler
         </v-btn>
       </v-col>
     </v-row>
@@ -138,6 +131,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useDisplay } from 'vuetify'
 import { useEventsStore } from '../stores/events.js'
 import constants from '../constants'
 import utils from '../utils/utils.js'
@@ -165,6 +159,7 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'cancel'])
 
+const display = useDisplay()
 const eventsStore = useEventsStore()
 const { events } = storeToRefs(eventsStore)
 

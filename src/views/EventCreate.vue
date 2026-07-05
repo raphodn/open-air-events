@@ -40,13 +40,13 @@ const createEvent = (eventForm) => {
 
   oedbService.createEvent(eventForm)
     .then(response => {
-      console.log("Événement créé avec succès:", response)
-      alert('Événement créé avec succès !')
+      console.log("Séance créée avec succès:", response)
+      alert('Séance créée avec succès !')
       router.push('/events')
     })
     .catch(error => {
-      console.error("Erreur lors de la création de l'événement:", error)
-      alert("Erreur lors de la création de l'événement.")
+      console.error("Erreur lors de la création de la séance:", error)
+      alert("Erreur lors de la création de la séance.")
     })
     .finally(() => {
       isSubmitting.value = false

@@ -80,7 +80,7 @@ const loadEvent = () => {
       const loaded = eventsStore.getEventById(eventId)
 
       if (!loaded) {
-        throw new Error('Event not found')
+        throw new Error('Séance introuvable')
       }
 
       existingEvent.value = loaded
@@ -90,7 +90,7 @@ const loadEvent = () => {
 
 const updateEvent = (eventForm) => {
   if (!existingEvent.value) {
-    alert('Evenement introuvable.')
+    alert('Séance introuvable.')
     return
   }
 
@@ -98,15 +98,15 @@ const updateEvent = (eventForm) => {
 
   oedbService.updateEvent(existingEvent.value, eventForm)
     .then(() => {
-      alert('Événement modifié avec succès !')
+      alert('Séance modifiée avec succès !')
       return eventsStore.fetchEvents({ forceRefresh: true })
     })
     .then(() => {
       router.push(`/events/${eventId}`)
     })
     .catch((error) => {
-      console.error('Erreur lors de la modification de l\'événement:', error)
-      alert('Erreur lors de la modification de l\'événement.')
+      console.error('Erreur lors de la modification de la séance:', error)
+      alert('Erreur lors de la modification de la séance.')
     })
     .finally(() => {
       isSubmitting.value = false
@@ -115,8 +115,8 @@ const updateEvent = (eventForm) => {
 
 loadEvent()
   .catch((error) => {
-    console.error('Impossible de charger l\'événement:', error)
-    alert('Événement introuvable.')
+    console.error('Impossible de charger la séance:', error)
+    alert('Séance introuvable.')
     router.push('/events')
   })
   .finally(() => {
