@@ -160,6 +160,7 @@ const eventLocationFullName = (event) => {
   let city = event.properties.osm_addr_city || ''
   let postcode = event.properties.osm_addr_postcode || ''
   let cityWithPostcodeShortPart = city ? `${city} ${postcode ? `(${geoUtils.getDepartmentCodeFromPostcode(postcode)})` : ''}` : ''
+  // let state = event.properties.osm_addr_state || ''
   // let country = event.properties.osm_addr_country || ''
   return [name, street, cityWithPostcodeShortPart].filter(Boolean).join(', ')
 }

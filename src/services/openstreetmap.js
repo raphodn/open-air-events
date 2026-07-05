@@ -1,7 +1,9 @@
-const OSM_PHOTON_SEARCH_URL = 'https://photon.komoot.io/api/'
+import constants from '@/constants.js'
+import geoUtils from '../utils/geo.js'
+
 
 const photonSearch = (q) => {
-  let url = `${OSM_PHOTON_SEARCH_URL}?q=${q}&limit=10`
+  let url = `${constants.OSM_PHOTON_SEARCH_API_URL}?q=${q}&limit=10`
   return fetch(url, {
       method: 'GET',
     })
@@ -9,14 +11,17 @@ const photonSearch = (q) => {
     .then(data => data.features)
 }
 
+// Example: Salle des fêtes, Route de la Pierre de Dîme, Saint-Jean-d'Hérans (38), Auvergne-Rhône-Alpes, France
 const photonLocationFullName = (location) => {
   let name = location.name || ''
   let housenumber = location.housenumber || ''
   let street = location.street || ''
   let city = location.city || ''
+  let postcode = location.postcode || ''
+  let cityWithPostcodeShortPart = city ? `${city} ${postcode ? `(${geoUtils.getDepartmentCodeFromPostcode(postcode)})` : ''}` : ''
   let state = location.state || ''
   let country = location.country || ''
-  return [name, housenumber, street, city, state, country].filter(Boolean).join(', ')
+  return [name, housenumber, street, cityWithPostcodeShortPart, state, country].filter(Boolean).join(', ')
 }
 
 const photonLocationType = (location) => {
