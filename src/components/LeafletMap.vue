@@ -169,4 +169,14 @@ const locationSelected = (location) => {
 .leaflet-popup-content-wrapper {
   padding: 0;
 }
+.leaflet-popup-content .v-card {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.leaflet-popup-content .v-card p {
+  margin: 0 0 12px;
+}
+.leaflet-popup-content .v-card p:last-child {
+  margin-bottom: 0;
+}
 </style>
