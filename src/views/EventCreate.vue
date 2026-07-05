@@ -15,8 +15,10 @@ import { useSnackbar } from '../composables/useSnackbar.js'
 import oedbService from '../services/openeventdatabase.js'
 import EventForm from '../components/EventForm.vue'
 import constants from '../constants'
+import { useEventsStore } from '../stores/events.js'
 
 const router = useRouter()
+const eventsStore = useEventsStore()
 const { showSuccess, showError } = useSnackbar()
 
 const initialForm = ref({
