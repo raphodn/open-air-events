@@ -1,5 +1,5 @@
 <template>
-  <v-alert type="info" variant="outlined" density="compact">
+  <v-alert color="primary" variant="outlined" density="compact">
     La base de données utilisée est <a :href="constants.OEDB_WIKI_URL" target="_blank">OpenEventDatabase</a> (OEDB)
   </v-alert>
 
