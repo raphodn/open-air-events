@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="h-100 d-flex flex-column"
+    class="h-100 d-flex flex-column event-card"
     :class="{ 'event-card--past': isPastEvent }"
     :to="cardTo"
     :link="!props.readonly"
@@ -80,6 +80,10 @@ const isTodayEvent = computed(() => {
 </script>
 
 <style scoped>
+.event-card {
+  border: 1px solid rgb(var(--v-theme-secondary));
+}
+
 .event-card--past {
   background-color: rgba(var(--v-theme-on-surface), 0.05);
 }

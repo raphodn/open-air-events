@@ -3,3 +3,7 @@
   flex-wrap: wrap;
   gap: 4px 4px;
 }
+
+.background-color-grey {
+  background-color: rgba(var(--v-theme-on-surface), 0.05);
+}

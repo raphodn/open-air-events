@@ -14,4 +14,18 @@ export const vuetify = createVuetify({
       mdi,
     },
   }
+  ,
+  theme: {
+    defaultTheme: 'light',
+    themes: {
+      light: {
+        colors: {
+          primary: '#0A3A5A',
+          secondary: '#F6C24A',
+          'on-primary': '#F2EEE6',
+          'on-secondary': '#0A3A5A'
+        }
+      }
+    }
+  }
 })
