@@ -1,7 +1,7 @@
 <template>
   <l-map ref="mapRef" v-model:zoom="mapZoom" :center="mapCenter" :use-global-leaflet="false" @ready="initMap">
     <l-tile-layer :url="tiles" layer-type="base" name="OpenStreetMap" :attribution="attribution" />
-    <l-marker v-for="item in mapItems" :key="getMapItemKey(item)" :lat-lng="getMapItemLatLng(item)">
+    <l-marker v-for="item in mapItems" :key="getMapItemKey(item)" :lat-lng="getMapItemLatLng(item)" :icon="markerIcon">
       <l-popup>
         <EventCard v-if="isEventsMode" :event="item" readonly />
         <LocationCard
@@ -17,11 +17,14 @@
 
 <script setup>
 import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
 import { computed, ref, watch } from 'vue'
 import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import { useTheme } from 'vuetify'
 import EventCard from './EventCard.vue'
 import LocationCard from './LocationCard.vue'
+import locationMarkerUrl from '../assets/marker-location.svg'
+import eventMarkerUrl from '../assets/marker-event.svg'
 import geoUtils from '../utils/geo.js'
 
 const props = defineProps({
@@ -48,6 +51,18 @@ const mapCenter = ref([45, 5])
 const mapBounds = ref(null)
 const theme = useTheme()
 
+const createMarkerIcon = (iconUrl) => {
+  return L.icon({
+    iconUrl,
+    iconSize: [26, 38],
+    iconAnchor: [13, 38],
+    popupAnchor: [0, -34]
+  })
+}
+
+const locationMarkerIcon = createMarkerIcon(locationMarkerUrl)
+const eventMarkerIcon = createMarkerIcon(eventMarkerUrl)
+
 const attributionBase = '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 const attribution = computed(() => {
   if (theme.global.name.value === 'dark') {
@@ -73,6 +88,14 @@ const mapItems = computed(() => {
   }
 
   return props.locations
+})
+
+const markerIcon = computed(() => {
+  if (isEventsMode.value) {
+    return eventMarkerIcon
+  }
+
+  return locationMarkerIcon
 })
 
 const mapLocations = computed(() => {
