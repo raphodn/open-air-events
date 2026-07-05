@@ -10,8 +10,6 @@ const OEDB_START_STOP = 'start=2026-01-01T00:00&stop=2026-12-31T23:59'
 // const OEDB_START_STOP = '?when=NEXT365DAYS'
 const OEDB_LIMIT = 1000
 
-let eventsCache = null
-let eventsLastSyncDate = null
 let eventsRequestPromise = null
 
 
@@ -34,16 +32,11 @@ const fetchEvents = () => {
 }
 
 /**
- * Get events from the OpenEventDatabase API, with caching and optional force refresh.
+ * Get events from the OpenEventDatabase API, with optional force refresh.
  */
 const getEvents = ({ forceRefresh = false } = {}) => {
-  // Return the last successful payload immediately when cache is warm.
-  if (!forceRefresh && eventsCache) {
-    return Promise.resolve(eventsCache)
-  }
-
   // Reuse the ongoing fetch to avoid duplicate concurrent requests.
-  if (!forceRefresh && eventsRequestPromise) {
+  if (eventsRequestPromise) {
     return eventsRequestPromise
   }
 
@@ -51,10 +44,6 @@ const getEvents = ({ forceRefresh = false } = {}) => {
     .then((data) => {
       // order by start date ascending
       data.features.sort((a, b) => new Date(a.properties.start) - new Date(b.properties.start))
-      // cache the result
-      eventsCache = data
-      // update the last sync date
-      eventsLastSyncDate = new Date()
       return data
     })
     .finally(() => {
@@ -62,11 +51,6 @@ const getEvents = ({ forceRefresh = false } = {}) => {
     })
 
   return eventsRequestPromise
-}
-
-const clearEventsCache = () => {
-  eventsCache = null
-  eventsLastSyncDate = null
 }
 
 const buildEventPayload = (eventData, existingEvent = null) => {
@@ -116,7 +100,6 @@ const createEvent = (eventData) => {
     return response.json()
   })
   .then((createdEvent) => {
-    clearEventsCache()
     return createdEvent
   })
 }
@@ -147,7 +130,6 @@ const updateEvent = (existingEvent, eventData) => {
     return response.json()
   })
   .then((updatedEvent) => {
-    clearEventsCache()
     return updatedEvent
   })
 }
@@ -168,7 +150,6 @@ const eventLocationFullName = (event) => {
 export default {
   getEventsFromJSON,
   getEvents,
-  clearEventsCache,
   createEvent,
   updateEvent,
   eventLocationFullName
