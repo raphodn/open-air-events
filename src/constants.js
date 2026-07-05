@@ -7,6 +7,7 @@ export default {
   OEDB_API_URL: 'https://api.openeventdatabase.org',
   OEDB_WHAT_DEFAULT,
   OEDB_WHAT_LIST: [
-      {key: OEDB_WHAT_DEFAULT, label: 'Cinéma en plein air'},
-  ]
+    {key: OEDB_WHAT_DEFAULT, label: 'Cinéma en plein air'},
+  ],
+  OSM_PHOTON_SEARCH_API_URL: 'https://photon.komoot.io/api/',
 }

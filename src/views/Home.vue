@@ -11,8 +11,9 @@
       <v-chip class="mb-1" size="small" color="primary" variant="tonal" label>{{ upcomingEvents.length }} à venir</v-chip>
   </h2>
 
-  <v-btn :block="display.smAndDown.value" color="primary" to="/events">Voir la liste</v-btn>
+  <v-btn :block="display.smAndDown.value" color="primary" to="/events">Trouver une séance</v-btn>
 
+  <br />
   <br />
 
   <h2 class="text-h6 font-weight-bold">Dernières séances ajoutées</h2>
