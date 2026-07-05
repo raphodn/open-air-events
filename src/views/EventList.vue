@@ -22,7 +22,8 @@
           </v-btn>
         </template>
         <v-card min-width="260" class="pa-4">
-          <div class="d-flex flex-wrap ga-2">
+          <h2 v-if="display.smAndDown.value" class="text-subtitle-1 font-weight-bold mb-2">Affichage</h2>
+          <div class="chip-group">
             <v-chip
               v-for="option in displayModeOptions"
               :key="option.value"
@@ -50,11 +51,12 @@
             prepend-icon="mdi-calendar-range"
             append-icon="mdi-menu-down"
           >
-            Date
+            <span v-if="!display.smAndDown.value">Date</span>
           </v-btn>
         </template>
         <v-card min-width="320" class="pa-4">
-          <div class="d-flex flex-wrap ga-2 mb-3">
+          <h2 v-if="display.smAndDown.value" class="text-subtitle-1 font-weight-bold mb-2">Filtrer par date</h2>
+          <div class="chip-group mb-2">
             <v-chip
               v-for="preset in datePresetOptions"
               :key="preset.value"
@@ -89,10 +91,11 @@
             prepend-icon="mdi-map-marker"
             append-icon="mdi-menu-down"
           >
-            Lieu
+            <span v-if="!display.smAndDown.value">Lieu</span>
           </v-btn>
         </template>
         <v-card min-width="320" class="pa-4">
+          <h2 v-if="display.smAndDown.value" class="text-subtitle-1 font-weight-bold mb-2">Filtrer par lieu</h2>
           <v-select
             v-model="selectedCountyCode"
             :items="countyOptions"
@@ -115,10 +118,11 @@
             prepend-icon="mdi-information-outline"
             append-icon="mdi-menu-down"
           >
-            Info
+            <span v-if="!display.smAndDown.value">Info</span>
           </v-btn>
         </template>
         <v-card min-width="320" class="pa-4">
+          <h2 v-if="display.smAndDown.value" class="text-subtitle-1 font-weight-bold mb-2">Filtrer par info</h2>
           <v-select
             v-model="selectedFilmLabel"
             :items="filmLabelOptions"
