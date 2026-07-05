@@ -141,18 +141,18 @@
     </v-col>
   </v-row>
 
-  <template v-if="selectedDisplayMode === 'cards'">
+  <template v-if="selectedDisplayMode === 'grid'">
     <v-row class="mt-0">
       <v-col v-for="event in displayedEvents" :key="event.properties.id" cols="12" sm="6" md="4" xl="3">
         <EventCard :event="event" />
       </v-col>
     </v-row>
   </template>
-  <template v-else>
+  <template v-else-if="selectedDisplayMode === 'map'">
     <v-row class="mt-0">
       <v-col cols="12">
         <div class="event-list-map">
-          <LeafletMap :locations="mapLocations" :showActions="false" />
+          <LeafletMap :events="displayedEvents" :showActions="false" />
         </div>
       </v-col>
     </v-row>
@@ -194,10 +194,10 @@ const selectedCountyCode = ref(route.query.county ?? null)
 const selectedDatePreset = ref(route.query.date ?? null)
 const selectedFilmLabel = ref(route.query.film ?? null)
 const selectedTag = ref(route.query.tag ?? null)
-const selectedDisplayMode = ref(route.query.view === 'map' ? 'map' : 'cards')
+const selectedDisplayMode = ref(route.query.view === 'map' ? 'map' : 'grid')
 
 const displayModeOptions = [
-  { title: 'Grille', value: 'cards', icon: 'mdi-view-grid-outline' },
+  { title: 'Grille', value: 'grid', icon: 'mdi-view-grid-outline' },
   { title: 'Carte', value: 'map', icon: 'mdi-map-outline' }
 ]
 
@@ -286,7 +286,7 @@ watch(() => route.query.tag, (tag) => {
 })
 
 watch(() => route.query.view, (view) => {
-  selectedDisplayMode.value = view === 'map' ? 'map' : 'cards'
+  selectedDisplayMode.value = view === 'map' ? 'map' : 'grid'
 })
 
 watch(selectedCountyCode, (depCode) => {
@@ -448,9 +448,6 @@ const displayedEvents = computed(() => {
   })
 })
 
-const mapLocations = computed(() => {
-  return displayedEvents.value.map((event) => event.properties)
-})
 </script>
 
 <style scoped>
