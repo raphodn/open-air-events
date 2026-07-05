@@ -8,7 +8,7 @@
           Dernière mise à jour {{ relativeLastSyncDate }}.
         </p>
         <v-btn class="mx-2 my-2" variant="text" prepend-icon="mdi-refresh" @click="refreshEvents">Rafraîchir</v-btn>
-        <v-btn class="mx-2 my-2" variant="text" prepend-icon="mdi-github" :href="constants.APP_GITHUB_URL" target="_blank">Github</v-btn>
+        <v-btn class="mx-2 my-2" variant="text" prepend-icon="mdi-information" :to="{ name: 'about' }">À propos</v-btn>
       </v-col>
     </v-row>
   </v-footer>
@@ -18,7 +18,6 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
-import constants from '../constants'
 import dateUtils from '../utils/date.js'
 import { useEventsStore } from '../stores/events.js'
 
