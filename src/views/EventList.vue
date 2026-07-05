@@ -11,6 +11,38 @@
             class="mr-2"
             v-bind="props"
             color="primary"
+            :variant="selectedDisplayMode === 'map' ? 'flat' : 'outlined'"
+            :active="selectedDisplayMode === 'map'"
+            size="small"
+            prepend-icon="mdi-view-dashboard-outline"
+            append-icon="mdi-menu-down"
+          >
+            Affichage
+          </v-btn>
+        </template>
+        <v-card min-width="260" class="pa-4">
+          <div class="d-flex flex-wrap ga-2">
+            <v-chip
+              v-for="option in displayModeOptions"
+              :key="option.value"
+              :variant="selectedDisplayMode === option.value ? 'flat' : 'outlined'"
+              color="primary"
+              size="small"
+              :prepend-icon="option.icon"
+              @click="selectedDisplayMode = option.value"
+            >
+              {{ option.title }}
+            </v-chip>
+          </div>
+        </v-card>
+      </v-menu>
+
+      <v-menu :close-on-content-click="false">
+        <template #activator="{ props }">
+          <v-btn
+            class="mr-2"
+            v-bind="props"
+            color="primary"
             :variant="hasDateFilter ? 'flat' : 'outlined'"
             :active="hasDateFilter"
             size="small"
@@ -109,11 +141,22 @@
     </v-col>
   </v-row>
 
-  <v-row class="mt-0">
-    <v-col v-for="event in displayedEvents" :key="event.properties.id" cols="12" sm="6" md="4" xl="3">
-      <EventCard :event="event" />
-    </v-col>
-  </v-row>
+  <template v-if="selectedDisplayMode === 'cards'">
+    <v-row class="mt-0">
+      <v-col v-for="event in displayedEvents" :key="event.properties.id" cols="12" sm="6" md="4" xl="3">
+        <EventCard :event="event" />
+      </v-col>
+    </v-row>
+  </template>
+  <template v-else>
+    <v-row class="mt-0">
+      <v-col cols="12">
+        <div class="event-list-map">
+          <LeafletMap :locations="mapLocations" :showActions="false" />
+        </div>
+      </v-col>
+    </v-row>
+  </template>
 
   <br />
   <br />
@@ -137,6 +180,7 @@ import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 import { useEventsStore } from '../stores/events.js'
 import EventCard from '../components/EventCard.vue'
+import LeafletMap from '../components/LeafletMap.vue'
 import departements from '../data/departements.json'
 
 const eventsStore = useEventsStore()
@@ -150,6 +194,12 @@ const selectedCountyCode = ref(route.query.county ?? null)
 const selectedDatePreset = ref(route.query.date ?? null)
 const selectedFilmLabel = ref(route.query.film ?? null)
 const selectedTag = ref(route.query.tag ?? null)
+const selectedDisplayMode = ref(route.query.view === 'map' ? 'map' : 'cards')
+
+const displayModeOptions = [
+  { title: 'Grille', value: 'cards', icon: 'mdi-view-grid-outline' },
+  { title: 'Carte', value: 'map', icon: 'mdi-map-outline' }
+]
 
 const datePresetOptions = [
   { title: "Aujourd'hui", value: 'today' },
@@ -235,6 +285,10 @@ watch(() => route.query.tag, (tag) => {
   selectedTag.value = tag ?? null
 })
 
+watch(() => route.query.view, (view) => {
+  selectedDisplayMode.value = view === 'map' ? 'map' : 'cards'
+})
+
 watch(selectedCountyCode, (depCode) => {
   const query = { ...route.query }
 
@@ -290,6 +344,18 @@ watch(selectedTag, (tag) => {
     query.tag = tag
   } else {
     delete query.tag
+  }
+
+  router.replace({ query })
+})
+
+watch(selectedDisplayMode, (mode) => {
+  const query = { ...route.query }
+
+  if (mode === 'map') {
+    query.view = 'map'
+  } else {
+    delete query.view
   }
 
   router.replace({ query })
@@ -381,4 +447,15 @@ const displayedEvents = computed(() => {
     return true
   })
 })
+
+const mapLocations = computed(() => {
+  return displayedEvents.value.map((event) => event.properties)
+})
 </script>
+
+<style scoped>
+.event-list-map {
+  height: min(70vh, 760px);
+  min-height: 420px;
+}
+</style>
