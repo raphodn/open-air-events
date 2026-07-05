@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="h-100 d-flex flex-column border-primary"
-    :class="{ 'background-color-primary-lighten-5': isPastEvent }"
+    class="h-100 d-flex flex-column border-secondary"
+    :class="{ 'background-color-secondary-lighten-5': isPastEvent }"
     :to="cardTo"
     :link="!props.readonly"
   >
