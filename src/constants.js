@@ -9,5 +9,6 @@ export default {
   OEDB_WHAT_LIST: [
     {key: OEDB_WHAT_DEFAULT, label: 'Cinéma en plein air'},
   ],
+  OSM_URL: 'https://www.openstreetmap.org',
   OSM_PHOTON_SEARCH_API_URL: 'https://photon.komoot.io/api/',
 }
