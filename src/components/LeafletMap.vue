@@ -23,8 +23,8 @@ import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import { useTheme } from 'vuetify'
 import EventCard from './EventCard.vue'
 import LocationCard from './LocationCard.vue'
-import locationMarkerUrl from '../assets/marker-location.svg'
-import eventMarkerUrl from '../assets/marker-event.svg'
+import locationMarkerSvg from '../assets/marker-location.svg?raw'
+import eventMarkerSvg from '../assets/marker-event.svg?raw'
 import geoUtils from '../utils/geo.js'
 
 const props = defineProps({
@@ -51,17 +51,30 @@ const mapCenter = ref([45, 5])
 const mapBounds = ref(null)
 const theme = useTheme()
 
-const createMarkerIcon = (iconUrl) => {
+const createMarkerIcon = (svg) => {
   return L.icon({
-    iconUrl,
+    iconUrl: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
     iconSize: [26, 38],
     iconAnchor: [13, 38],
     popupAnchor: [0, -34]
   })
 }
 
-const locationMarkerIcon = createMarkerIcon(locationMarkerUrl)
-const eventMarkerIcon = createMarkerIcon(eventMarkerUrl)
+const primaryColor = computed(() => {
+  return theme.global.current.value.colors.primary
+})
+
+const colorizeMarkerSvg = (svg, color) => {
+  return svg.replaceAll('#1e88e5', color)
+}
+
+const locationMarkerIcon = computed(() => {
+  return createMarkerIcon(colorizeMarkerSvg(locationMarkerSvg, primaryColor.value))
+})
+
+const eventMarkerIcon = computed(() => {
+  return createMarkerIcon(colorizeMarkerSvg(eventMarkerSvg, primaryColor.value))
+})
 
 const attributionBase = '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 const attribution = computed(() => {
@@ -92,10 +105,10 @@ const mapItems = computed(() => {
 
 const markerIcon = computed(() => {
   if (isEventsMode.value) {
-    return eventMarkerIcon
+    return eventMarkerIcon.value
   }
 
-  return locationMarkerIcon
+  return locationMarkerIcon.value
 })
 
 const mapLocations = computed(() => {
