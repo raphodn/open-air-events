@@ -26,6 +26,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useSnackbar } from '../composables/useSnackbar.js'
 import constants from '../constants'
 import dateUtils from '../utils/date.js'
 import EventForm from '../components/EventForm.vue'
@@ -36,6 +37,7 @@ import { useEventsStore } from '../stores/events.js'
 const route = useRoute()
 const router = useRouter()
 const eventsStore = useEventsStore()
+const { showSuccess, showError } = useSnackbar()
 
 const eventId = String(route.params.id || '')
 const isLoading = ref(true)
@@ -90,15 +92,17 @@ const loadEvent = () => {
 
 const updateEvent = (eventForm) => {
   if (!existingEvent.value) {
-    alert('Séance introuvable.')
+    showError('Séance introuvable.')
     return
   }
 
   isSubmitting.value = true
 
   oedbService.updateEvent(existingEvent.value, eventForm)
-    .then(() => {
-      alert('Séance modifiée avec succès !')
+    .then((response) => {
+      console.log('Update response:', response)
+      showSuccess('Séance modifiée avec succès !')
+      // API returns { id: "..." }, so we need to fetch the updated event from the store
       return eventsStore.fetchEvents({ forceRefresh: true })
     })
     .then(() => {
@@ -106,7 +110,7 @@ const updateEvent = (eventForm) => {
     })
     .catch((error) => {
       console.error('Erreur lors de la modification de la séance:', error)
-      alert('Erreur lors de la modification de la séance.')
+      showError('Erreur lors de la modification de la séance.')
     })
     .finally(() => {
       isSubmitting.value = false
@@ -116,7 +120,7 @@ const updateEvent = (eventForm) => {
 loadEvent()
   .catch((error) => {
     console.error('Impossible de charger la séance:', error)
-    alert('Séance introuvable.')
+    showError('Séance introuvable.')
     router.push('/events')
   })
   .finally(() => {
