@@ -4,6 +4,18 @@
   gap: 4px 4px;
 }
 
+.border-primary {
+  border: 1px solid rgba(var(--v-theme-primary));
+}
+.border-secondary {
+  border: 1px solid rgba(var(--v-theme-secondary));
+}
 .background-color-grey {
   background-color: rgba(var(--v-theme-on-surface), 0.05);
+}
+.background-color-primary-lighten-5 {
+  background-color: rgba(var(--v-theme-primary), 0.05);
+}
+.background-color-secondary-lighten-5 {
+  background-color: rgba(var(--v-theme-secondary), 0.05);
 }
