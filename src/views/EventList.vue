@@ -87,6 +87,16 @@
         </template>
         <v-card min-width="320" class="pa-4">
           <v-select
+            v-model="selectedFilmLabel"
+            :items="filmLabelOptions"
+            clearable
+            density="compact"
+            hide-details
+            label="Film"
+            class="mb-3"
+          />
+
+          <v-select
             v-model="selectedTag"
             :items="tagOptions"
             clearable
@@ -138,6 +148,7 @@ const { events } = storeToRefs(eventsStore)
 const includePast = ref(route.query.past === '1')
 const selectedCountyCode = ref(route.query.county ?? null)
 const selectedDatePreset = ref(route.query.date ?? null)
+const selectedFilmLabel = ref(route.query.film ?? null)
 const selectedTag = ref(route.query.tag ?? null)
 
 const datePresetOptions = [
@@ -164,6 +175,14 @@ const countyOptions = computed(() => {
 const selectedCountyName = computed(() => {
   const county = departements.find((departement) => departement.code === selectedCountyCode.value)
   return county?.nom ?? null
+})
+
+const filmLabelOptions = computed(() => {
+  const labels = events.value
+    .map((event) => String(event?.properties?.label ?? '').trim())
+    .filter(Boolean)
+
+  return [...new Set(labels)].sort((a, b) => a.localeCompare(b))
 })
 
 const tagOptions = computed(() => {
@@ -193,7 +212,7 @@ const hasLieuFilter = computed(() => {
 })
 
 const hasInfoFilter = computed(() => {
-  return !!selectedTag.value
+  return !!selectedFilmLabel.value || !!selectedTag.value
 })
 
 watch(() => route.query.county, (depCode) => {
@@ -206,6 +225,10 @@ watch(() => route.query.date, (datePreset) => {
 
 watch(() => route.query.past, (past) => {
   includePast.value = past === '1'
+})
+
+watch(() => route.query.film, (film) => {
+  selectedFilmLabel.value = film ?? null
 })
 
 watch(() => route.query.tag, (tag) => {
@@ -243,6 +266,18 @@ watch(includePast, (showPast) => {
     query.past = '1'
   } else {
     delete query.past
+  }
+
+  router.replace({ query })
+})
+
+watch(selectedFilmLabel, (film) => {
+  const query = { ...route.query }
+
+  if (film) {
+    query.film = film
+  } else {
+    delete query.film
   }
 
   router.replace({ query })
@@ -332,6 +367,10 @@ const displayedEvents = computed(() => {
     }
 
     if (selectedCountyCode.value && eventCountyName !== selectedCountyName.value) {
+      return false
+    }
+
+    if (selectedFilmLabel.value && event.properties.label !== selectedFilmLabel.value) {
       return false
     }
 
