@@ -18,7 +18,7 @@
 
     <Footer />
 
-    <v-snackbar v-model="showSnackbar" :color="snackbarColor" :timeout="3000">
+    <v-snackbar v-model="showSnackbar" :color="snackbarColor" :timeout="3000" location="top">
       {{ snackbarMessage }}
     </v-snackbar>
   </v-app>
