@@ -1,32 +1,15 @@
 <template>
   <l-map ref="mapRef" v-model:zoom="mapZoom" :center="mapCenter" :use-global-leaflet="false" @ready="initMap">
     <l-tile-layer :url="tiles" layer-type="base" name="OpenStreetMap" :attribution="attribution" />
-    <l-marker v-for="location in locations" :key="getLocationOSMUniqueId(location)" :lat-lng="getLocationOSMLatLng(location)">
+    <l-marker v-for="item in mapItems" :key="getMapItemKey(item)" :lat-lng="getMapItemLatLng(item)">
       <l-popup>
-        <v-card>
-          <v-card-title>
-            {{ getLocationTitle(location, true, false, false) }}
-          </v-card-title>
-          <v-card-subtitle>
-            {{ getLocationTitle(location, false, true, true) }}<br>
-          </v-card-subtitle>
-          <v-card-text>
-            <v-chip label size="small" density="comfortable">
-              {{ getLocationOSMTag(location) }}
-            </v-chip>
-          </v-card-text>
-          <v-card-actions v-if="showActions">
-            <v-btn
-              block
-              color="primary"
-              variant="flat"
-              :block="!display.smAndUp.value"
-              @click="locationSelected(location)"
-            >
-              Selectionner
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+        <EventCard v-if="isEventsMode" :event="item" readonly />
+        <LocationCard
+          v-else
+          :location="getLocationFromMapItem(item)"
+          :show-actions="showActions"
+          @select="locationSelected"
+        />
       </l-popup>
     </l-marker>
   </l-map>
@@ -36,13 +19,19 @@
 import 'leaflet/dist/leaflet.css'
 import { computed, ref, watch } from 'vue'
 import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
-import { useDisplay, useTheme } from 'vuetify'
+import { useTheme } from 'vuetify'
+import EventCard from './EventCard.vue'
+import LocationCard from './LocationCard.vue'
 import geoUtils from '../utils/geo.js'
 
 const props = defineProps({
   locations: {
     type: Array,
-    required: true
+    default: () => []
+  },
+  events: {
+    type: Array,
+    default: () => []
   },
   showActions: {
     type: Boolean,
@@ -57,7 +46,6 @@ const map = ref(null)
 const mapZoom = ref(12)  // fitMapToBounds will override this if there are multiple locations
 const mapCenter = ref([45, 5])
 const mapBounds = ref(null)
-const display = useDisplay()
 const theme = useTheme()
 
 const attributionBase = '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -75,12 +63,28 @@ const tiles = computed(() => {
   return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 })
 
+const isEventsMode = computed(() => {
+  return props.events.length > 0
+})
+
+const mapItems = computed(() => {
+  if (isEventsMode.value) {
+    return props.events
+  }
+
+  return props.locations
+})
+
+const mapLocations = computed(() => {
+  return mapItems.value.map((item) => getLocationFromMapItem(item))
+})
+
 // Fit the map to the bounds of the locations
 // If there is only one location, set the map view to that location with the default zoom
 const fitMapToBounds = () => {
   if (map.value && mapBounds.value?.length) {
-    if (props.locations.length === 1) {
-      map.value.setView(getLocationOSMLatLng(props.locations[0]), mapZoom.value)
+    if (mapLocations.value.length === 1) {
+      map.value.setView(getLocationOSMLatLng(mapLocations.value[0]), mapZoom.value)
       return
     }
 
@@ -89,7 +93,7 @@ const fitMapToBounds = () => {
 }
 
 watch(
-  () => props.locations,
+  mapLocations,
   (locations) => {
     mapBounds.value = geoUtils.getMapBounds(locations)
     fitMapToBounds()
@@ -102,16 +106,28 @@ const initMap = () => {
   fitMapToBounds()
 }
 
-const getLocationTitle = (location, withName = true, withRoad = false, withCity = true) => {
-  return geoUtils.getLocationOSMTitle(location, withName, withRoad, withCity)
+function getLocationFromMapItem(item) {
+  if (isEventsMode.value) {
+    return item.properties
+  }
+
+  return item
+}
+
+function getMapItemKey(item) {
+  if (isEventsMode.value && item.properties.id) {
+    return `event-${item.properties.id}`
+  }
+
+  return getLocationOSMUniqueId(getLocationFromMapItem(item))
+}
+
+function getMapItemLatLng(item) {
+  return getLocationOSMLatLng(getLocationFromMapItem(item))
 }
 
 const getLocationOSMUniqueId = (location) => {
   return geoUtils.getLocationOSMUniqueId(location)
-}
-
-const getLocationOSMTag = (location) => {
-  return geoUtils.getLocationOSMTag(location)
 }
 
 const getLocationOSMLatLng = (location) => {
