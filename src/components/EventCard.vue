@@ -21,8 +21,11 @@
         </span>
       </p>
     </v-card-text>
-    <v-divider></v-divider>
-    <v-card-text class="text-caption text-grey-darken-1" style="max-height:50px;">
+    <v-divider v-if="props.showActionButton || props.showFooter"></v-divider>
+    <v-card-text v-if="props.showActionButton">
+      <v-btn :block="display.smAndDown.value" color="primary" size="small" :to="detailsTo" link>Détails</v-btn>
+    </v-card-text>
+    <v-card-text v-else-if="props.showFooter" class="text-caption text-grey-darken-1" style="max-height:50px;">
       Ajouté le {{ dateUtils.formatDate(event.properties.createdate) }}
     </v-card-text>
   </v-card>
@@ -30,6 +33,7 @@
 
 <script setup>
 import { computed, defineProps } from 'vue'
+import { useDisplay } from 'vuetify'
 import dateUtils from '../utils/date.js'
 import oedbService from '../services/openeventdatabase.js'
 
@@ -38,10 +42,24 @@ const props = defineProps({
     type: Object,
     required: true
   },
+  showActionButton: {
+    type: Boolean,
+    default: false
+  },
+  showFooter: {
+    type: Boolean,
+    default: false
+  },
   readonly: {
     type: Boolean,
     default: false
   }
+})
+
+const display = useDisplay()
+
+const detailsTo = computed(() => {
+  return { name: 'event-details', params: { id: props.event.properties.id } }
 })
 
 const cardTo = computed(() => {
@@ -49,7 +67,7 @@ const cardTo = computed(() => {
     return undefined
   }
 
-  return { name: 'event-details', params: { id: props.event.properties.id } }
+  return detailsTo.value
 })
 
 const isPastEvent = computed(() => {
