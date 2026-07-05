@@ -8,7 +8,7 @@
     </v-app-bar-title>
     <v-btn v-if="!display.smAndUp.value" icon="mdi-plus-circle-outline" to="/events/create" aria-label="Ajouter" />
     <v-btn v-else prepend-icon="mdi-plus-circle-outline" to="/events/create" aria-label="Ajouter">
-      Ajouter un événement
+      Ajouter une séance
     </v-btn>
   </v-app-bar>
 </template>

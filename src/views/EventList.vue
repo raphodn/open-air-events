@@ -39,7 +39,7 @@
             color="primary"
             density="compact"
             hide-details
-            label="Afficher les événements passés"
+            label="Afficher les séances passées"
           />
         </v-card>
       </v-menu>
@@ -105,9 +105,17 @@
     </v-col>
   </v-row>
 
+  <br />
+  <br />
+
+  <v-divider />
+  <br />
+
+  <h2 class="text-h6 font-weight-bold">Il manque une séance ?</h2>
+
   <v-row>
     <v-col>
-      <v-btn color="primary" to="/events/create">Ajouter un événement manquant</v-btn>
+      <v-btn :block="display.smAndDown.value" color="primary" to="/events/create">Ajouter une séance</v-btn>
     </v-col>
   </v-row>
 </template>
@@ -116,6 +124,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { useDisplay } from 'vuetify'
 import { useEventsStore } from '../stores/events.js'
 import EventCard from '../components/EventCard.vue'
 import departements from '../data/departements.json'
@@ -123,6 +132,7 @@ import departements from '../data/departements.json'
 const eventsStore = useEventsStore()
 const route = useRoute()
 const router = useRouter()
+const display = useDisplay()
 
 const { events } = storeToRefs(eventsStore)
 const includePast = ref(route.query.past === '1')
