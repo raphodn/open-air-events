@@ -11,13 +11,14 @@
             class="mr-2"
             v-bind="props"
             color="primary"
-            :variant="selectedDisplayMode === 'map' ? 'flat' : 'outlined'"
-            :active="selectedDisplayMode === 'map'"
+            flat
+            active
             size="small"
-            prepend-icon="mdi-view-dashboard-outline"
+            prepend-icon="mdi-laptop"
             append-icon="mdi-menu-down"
+            title="Affichage"
           >
-            Affichage
+            <span v-if="!display.smAndDown.value">Affichage</span>
           </v-btn>
         </template>
         <v-card min-width="260" class="pa-4">
