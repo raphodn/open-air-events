@@ -26,10 +26,15 @@
         <v-text-field
           v-model="eventForm.label"
           label="Film projeté *"
+          list="film-label-suggestions"
           hide-details="auto"
           :rules="[rules.required]"
           required
         ></v-text-field>
+
+        <datalist id="film-label-suggestions">
+          <option v-for="label in filmLabelSuggestions" :key="label" :value="label" />
+        </datalist>
       </v-col>
 
       <v-col cols="12" md="6">
@@ -97,11 +102,7 @@
           Rechercher
         </v-btn>
 
-        <LocationResult
-          v-if="eventForm.location"
-          class="mt-4"
-          :location="eventForm.location.properties"
-        />
+        <LocationResult v-if="eventForm.location" class="mt-4" :location="eventForm.location.properties" />
 
         <p v-else class="text-error">Aucun lieu sélectionné</p>
       </v-col>
@@ -134,7 +135,7 @@ import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 import { useEventsStore } from '../stores/events.js'
 import constants from '../constants'
-import utils from '../utils/utils.js'
+import eventsUtils from '../utils/events.js'
 import LocationSearchDialog from './LocationSearchDialog.vue'
 import LocationResult from './LocationResult.vue'
 
@@ -213,37 +214,17 @@ const eventFormFilled = computed(() => {
 })
 
 const existingTags = computed(() => {
-  const tags = events.value.flatMap((event) => {
-    const eventTags = event?.properties?.tags
+  return eventsUtils.getEventTags(events.value)
+})
 
-    if (Array.isArray(eventTags)) {
-      return eventTags
-    }
-
-    if (typeof eventTags === 'string' && eventTags.trim()) {
-      return [eventTags]
-    }
-
-    return []
-  })
-
-  return [...new Set(tags.map((tag) => String(tag).trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b))
+const filmLabelSuggestions = computed(() => {
+  return eventsUtils.getEventLabels(events.value)
 })
 
 const duplicateUrlEvent = computed(() => {
-  const normalizedUrl = utils.normalizeUrl(eventForm.value.url)
-
-  if (!normalizedUrl) {
-    return null
-  }
-
-  return events.value.find((event) => {
-    if (props.currentEventId && event?.properties?.id === props.currentEventId) {
-      return false
-    }
-
-    return utils.normalizeUrl(event?.properties?.url) === normalizedUrl
-  }) ?? null
+  return eventsUtils.findDuplicateEventByUrl(events.value, eventForm.value.url, {
+    excludeEventId: props.currentEventId
+  })
 })
 
 const openLocationDialog = () => {
