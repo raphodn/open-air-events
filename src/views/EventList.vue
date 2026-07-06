@@ -237,10 +237,10 @@ const countyOptions = computed(() => {
   })
 })
 
-const selectedCountyName = computed(() => {
-  const county = departements.find((departement) => departement.code === selectedCountyCode.value)
-  return county?.nom ?? null
-})
+// const selectedCountyName = computed(() => {
+//   const county = departements.find((departement) => departement.code === selectedCountyCode.value)
+//   return county?.nom ?? null
+// })
 
 const filmLabelOptions = computed(() => {
   const labels = events.value
@@ -444,12 +444,8 @@ const displayedEvents = computed(() => {
 
   return events.value.filter((event) => {
     const eventStart = new Date(event.properties.start).getTime()
-    const isUpcoming = eventStart > now
-    const eventCountyName = event.properties.osm_addr_county
-    const eventTags = Array.isArray(event.properties.tags)
-      ? event.properties.tags
-      : (typeof event.properties.tags === 'string' && event.properties.tags.trim() ? [event.properties.tags] : [])
 
+    // filter by date
     if (selectedRange) {
       const rangeStart = selectedRange.start.getTime()
       const rangeEnd = selectedRange.end.getTime()
@@ -459,22 +455,33 @@ const displayedEvents = computed(() => {
       }
     }
 
+    // filter by date (include past events)
+    const isUpcoming = eventStart > now
     if (!includePast.value && !isUpcoming) {
       return false
     }
 
-    if (selectedCountyCode.value && eventCountyName !== selectedCountyName.value) {
+    // filter by county
+    // issue with osm_addr_county: some OSM nodes have an empty county name
+    // if (selectedCountyCode.value && event.properties.osm_addr_county !== selectedCountyName.value) {
+    if (selectedCountyCode.value && !event.properties.osm_addr_postcode.startsWith(selectedCountyCode.value)) {
       return false
     }
 
+    // filter by film label
     if (selectedFilmLabel.value && event.properties.label !== selectedFilmLabel.value) {
       return false
     }
 
+    // filter by tag
+    const eventTags = Array.isArray(event.properties.tags)
+      ? event.properties.tags
+      : (typeof event.properties.tags === 'string' && event.properties.tags.trim() ? [event.properties.tags] : [])
     if (selectedTag.value && !eventTags.includes(selectedTag.value)) {
       return false
     }
 
+    // filter by fee (exclude paid events)
     if (excludeFee.value && Object.hasOwn(event.properties, 'fee') && event.properties.fee === true) {
       return false
     }
