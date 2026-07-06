@@ -11,10 +11,10 @@
     Le site est collaboratif. Si il manque une séance, <router-link :to="{ name: 'create-event' }">ajoutez-la</router-link> en quelques clics.
   </p>
   <p>
-    Chaque séance est stockée dans la base de données <a :href="constants.OEDB_WIKI_URL" target="_blank">OpenEventDatabase</a> (OEDB).
+    Chaque séance est stockée dans la base de données <a :href="constants.OEDB_WIKI_URL" target="_blank">OpenEventDatabase</a>.
   </p>
   <p>
-    Chaque séance est rattachée à un lieu sur <a :href="constants.OSM_URL" target="_blank">OpenStreetMap</a> (OSM).
+    Chaque séance est rattachée à un lieu sur <a :href="constants.OSM_URL" target="_blank">OpenStreetMap</a>.
   </p>
 
   <br />
@@ -26,8 +26,16 @@
 
   <br />
 
+  <h2 class="text-h6 font-weight-bold">Liens</h2>
+  <ul class="pl-4">
+    <li><router-link :to="{ name: 'stats' }">Statistiques</router-link></li>
+    <li><a :href="constants.APP_GITHUB_URL" target="_blank">Code source (GitHub)</a></li>
+  </ul>
+
+  <br />
+
   <v-alert color="primary" variant="outlined" density="compact">
-    N'hésitez pas à faire des retours, remonter des bugs, ou proposer des améliorations sur <a :href="constants.APP_GITHUB_URL" target="_blank">le dépôt GitHub</a>.
+    N'hésitez pas à faire des retours, remonter des bugs, ou proposer des améliorations sur GitHub.
   </v-alert>
 </template>
 
