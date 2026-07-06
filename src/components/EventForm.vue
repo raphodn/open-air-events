@@ -28,7 +28,7 @@
           label="Film projeté *"
           list="film-label-suggestions"
           hide-details="auto"
-          :rules="[rules.required]"
+          :rules="[rules.required, rules.noUrl]"
           required
         ></v-text-field>
 
@@ -49,6 +49,7 @@
           hide-details="auto"
           hint="Optionnel. Par exemple le nom du festival."
           persistent-hint
+          :rules="[rules.noUrl]"
         ></v-combobox>
       </v-col>
     </v-row>
@@ -82,7 +83,7 @@
           v-model="eventForm.start"
           label="Date et heure de debut *"
           type="datetime-local"
-          :rules="[rules.required, rules.dateTimeFormat]"
+          :rules="[rules.required, rules.dateTimeFormat, rules.yearFourDigits]"
           required
         ></v-text-field>
       </v-col>
@@ -200,11 +201,23 @@ const rules = reactive({
     const pattern = /^https?:\/\/.+/i
     return pattern.test(value) || 'URL invalide'
   },
+  noUrl: (value) => {
+    if (!value) return true
+    const forbiddenPatterns = ['http://', 'https://', 'www', '.com', '.fr', '.org']
+    const str = String(value)
+    const hasForbidden = forbiddenPatterns.some((pattern) => str.includes(pattern))
+    return !hasForbidden || 'Les URLs ne sont pas autorisées'
+  },
   dateTimeFormat: (value) => {
     if (!value) return 'Date/heure requise'
     const date = new Date(value)
     return !Number.isNaN(date.getTime()) || 'Format date/heure invalide'
-  }
+  },
+  yearFourDigits: (value) => {
+    if (!value) return true
+    const year = new Date(value).getFullYear()
+    return (year >= 1950 && year <= 2030) || 'Année invalide (4 chiffres maximum)'
+  },
 })
 
 watch(() => props.initialForm, (value) => {
