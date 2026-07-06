@@ -124,22 +124,31 @@
         <v-card min-width="320" class="pa-4">
           <h2 v-if="display.smAndDown.value" class="text-subtitle-1 font-weight-bold mb-2">Filtrer par info</h2>
           <v-select
+            class="mb-3"
             v-model="selectedFilmLabel"
             :items="filmLabelOptions"
             clearable
             density="compact"
             hide-details
             label="Film"
-            class="mb-3"
           />
 
           <v-select
+            class="mb-3"
             v-model="selectedTag"
             :items="tagOptions"
             clearable
             density="compact"
             hide-details
             label="Tag"
+          />
+
+          <v-checkbox
+            v-model="excludeFee"
+            color="primary"
+            density="compact"
+            hide-details
+            label="Afficher uniquement les séances gratuites"
           />
         </v-card>
       </v-menu>
@@ -200,6 +209,7 @@ const selectedDatePreset = ref(route.query.date ?? null)
 const selectedFilmLabel = ref(route.query.film ?? null)
 const selectedTag = ref(route.query.tag ?? null)
 const selectedDisplayMode = ref(route.query.view === 'map' ? 'map' : 'grid')
+const excludeFee = ref(route.query.fee === '0')
 
 const displayModeOptions = [
   { title: 'Grille', value: 'grid', icon: 'mdi-view-grid-outline' },
@@ -267,7 +277,7 @@ const hasLieuFilter = computed(() => {
 })
 
 const hasInfoFilter = computed(() => {
-  return !!selectedFilmLabel.value || !!selectedTag.value
+  return !!selectedFilmLabel.value || !!selectedTag.value || excludeFee.value
 })
 
 watch(() => route.query.county, (depCode) => {
@@ -288,6 +298,10 @@ watch(() => route.query.film, (film) => {
 
 watch(() => route.query.tag, (tag) => {
   selectedTag.value = tag ?? null
+})
+
+watch(() => route.query.fee, (fee) => {
+  excludeFee.value = fee === '0'
 })
 
 watch(() => route.query.view, (view) => {
@@ -349,6 +363,18 @@ watch(selectedTag, (tag) => {
     query.tag = tag
   } else {
     delete query.tag
+  }
+
+  router.replace({ query })
+})
+
+watch(excludeFee, (showFree) => {
+  const query = { ...route.query }
+
+  if (showFree) {
+    query.fee = '0'
+  } else {
+    delete query.fee
   }
 
   router.replace({ query })
@@ -446,6 +472,10 @@ const displayedEvents = computed(() => {
     }
 
     if (selectedTag.value && !eventTags.includes(selectedTag.value)) {
+      return false
+    }
+
+    if (excludeFee.value && Object.hasOwn(event.properties, 'fee') && event.properties.fee === true) {
       return false
     }
 
