@@ -20,6 +20,9 @@
           <v-chip v-for="tag in event.properties.tags" :key="tag" size="x-small" variant="tonal" label>{{ tag }}</v-chip>
         </span>
       </p>
+      <p v-if="event.properties.fee">
+        <span>💰 Payant</span>
+      </p>
     </v-card-text>
     <v-divider v-if="props.showActionButton || props.showFooter"></v-divider>
     <v-card-text v-if="props.showActionButton">

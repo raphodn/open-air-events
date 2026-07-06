@@ -86,6 +86,14 @@
           required
         ></v-text-field>
       </v-col>
+
+      <v-col cols="12" md="6">
+        <v-checkbox
+          v-model="eventForm.fee"
+          label="Payant ?"
+          hide-details="auto"
+        ></v-checkbox>
+      </v-col>
     </v-row>
 
     <h2 class="text-subtitle-1 font-weight-bold">Lieu</h2>
@@ -180,6 +188,8 @@ const eventForm = ref({
   tags: [],
   url: '',
   start: '',
+  // stop: '',  // will be set to start + 2 hours
+  fee: false,
   location: ''
 })
 
@@ -204,7 +214,8 @@ watch(() => props.initialForm, (value) => {
     tags: Array.isArray(value?.tags) ? value.tags : [],
     url: value?.url || '',
     start: value?.start || '',
-    location: value?.location || ''
+    fee: value?.fee || false,
+    location: value?.location || '',
   }
 }, { immediate: true })
 
