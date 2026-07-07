@@ -35,7 +35,7 @@
   <br />
 
   <v-alert color="primary" variant="outlined" density="compact">
-    N'hésitez pas à faire des retours, remonter des bugs, ou proposer des améliorations sur GitHub.
+    N'hésitez pas à faire des retours, remonter des bugs, ou proposer des améliorations sur GitHub 💛
   </v-alert>
 </template>
 
