@@ -17,5 +17,8 @@
   background-color: rgba(var(--v-theme-primary), 0.05);
 }
 .background-color-secondary-lighten-5 {
-  background-color: rgba(var(--v-theme-secondary), 0.05);
+  background-color: rgba(var(--v-theme-secondary), 0.05) !important;
+}
+.background-color-secondary-lighten-10 {
+  background-color: rgba(var(--v-theme-secondary), 0.1) !important;
 }
