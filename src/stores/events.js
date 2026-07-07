@@ -38,4 +38,11 @@ export const useEventsStore = defineStore('events', () => {
     fetchEvents,
     getEventById
   }
+},
+{
+  persist: {
+    key: 'events-store',
+    storage: localStorage,
+    paths: ['events', 'eventsCount', 'eventsLastSyncDate']
+  }
 })
