@@ -32,7 +32,7 @@
 
     <v-btn
       v-if="props.showDetailsIconButton"
-      class="floating-btn"
+      style="position: absolute; bottom: 2px; right: 2px;"
       icon="mdi-chevron-right"
       size="small"
       color="primary"
@@ -41,9 +41,9 @@
     />
     <v-btn
       v-else-if="props.showEditIconButton"
-      class="floating-btn"
+      style="position: absolute; bottom: 8px; right: 8px;"
       icon="mdi-pencil"
-      size="small"
+      size="x-small"
       color="primary"
       variant="text"
       :to="editTo"
@@ -111,9 +111,4 @@ const isTodayEvent = computed(() => {
 </script>
 
 <style scoped>
-.floating-btn {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-}
 </style>
