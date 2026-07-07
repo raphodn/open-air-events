@@ -20,6 +20,16 @@ yarn dev
 
 L'application sera disponible sur [http://localhost:5173](http://localhost:5173).
 
+### Autres commandes
+
+```
+# Lancer l'application en mode production
+yarn build
+
+# Lancer l'application en mode production avec un serveur local
+yarn preview
+```
+
 ## Stack technique
 
 * [Vue.js](https://vuejs.org) 3 + [Vuetify](https://vuetifyjs.com) 3
