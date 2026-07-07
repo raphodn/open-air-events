@@ -1,28 +1,20 @@
 <template>
-  <v-footer class="flex-grow-0 background-color-secondary-lighten-5">
-    <v-row no-gutters>
-      <v-col class="text-center">
-        <p>
-          {{ eventsStore.eventsCount }} séances.
-          <br v-if="!display.smAndUp.value" />
-          Dernière mise à jour {{ relativeLastSyncDate }}.
-        </p>
-        <v-btn class="mx-2 my-2" variant="text" prepend-icon="mdi-refresh" @click="refreshEvents">Rafraîchir</v-btn>
-        <v-btn class="mx-2 my-2" variant="text" prepend-icon="mdi-information" :to="{ name: 'about' }">À propos</v-btn>
-      </v-col>
-    </v-row>
-  </v-footer>
+  <v-app-bar v-if="isStale" class="mb-4" color="secondary" variant="tonal" height="40" style="cursor: pointer;" @click="refresh">
+    <v-app-bar-title class="text-body-2">
+      Dernière mise à jour {{ relativeLastSyncDate }}
+    </v-app-bar-title>
+    <v-btn icon="mdi-refresh" variant="text" aria-label="Rafraîchir" />
+  </v-app-bar>
 </template>
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useDisplay } from 'vuetify'
 import { useEventsStore } from '../stores/events.js'
 import dateUtils from '../utils/date.js'
 
 const eventsStore = useEventsStore()
-const display = useDisplay()
 const now = ref(Date.now())
+const hoursBeforeStale = 24
 let intervalId = null
 
 const relativeLastSyncDate = computed(() => {
@@ -32,7 +24,13 @@ const relativeLastSyncDate = computed(() => {
     : 'N/A'
 })
 
-const refreshEvents = () => {
+const isStale = computed(() => {
+  if (!eventsStore.eventsLastSyncDate) return false
+  const diffHours = (now.value - new Date(eventsStore.eventsLastSyncDate).getTime()) / 36e5
+  return diffHours > hoursBeforeStale
+})
+
+const refresh = () => {
   eventsStore.fetchEvents({ forceRefresh: true })
     .catch((error) => {
       console.error('Error refreshing events:', error)
@@ -52,6 +50,3 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<style scoped>
-</style>
