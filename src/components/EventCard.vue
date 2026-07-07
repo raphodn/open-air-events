@@ -25,7 +25,7 @@
       </p>
     </v-card-text>
     <v-divider v-if="props.showFooter"></v-divider>
-    <v-card-text v-if="props.showFooter">
+    <v-card-text v-if="props.showFooter" style="max-height:50px;">
       <v-btn v-if="props.showActionButton" :block="display.smAndDown.value" color="primary" size="small" :to="detailsTo" link>Détails</v-btn>
       <span v-else class="text-caption text-grey-darken-1">Ajoutée le {{ dateUtils.formatDate(event.properties.createdate) }}</span>
     </v-card-text>
@@ -91,10 +91,6 @@ const isTodayEvent = computed(() => {
 </script>
 
 <style scoped>
-.v-card {
-  position: relative;
-}
-
 .floating-btn {
   position: absolute;
   bottom: 2px;
