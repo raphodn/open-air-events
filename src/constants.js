@@ -4,6 +4,7 @@ export default {
   APP_NAME: 'CinéPleinAir',
   APP_DESCRIPTION: 'Trouvez et partagez les séances de cinéma en plein air près de chez vous.',
   APP_URL: 'https://cinepleinair.org',
+  APP_STORE_PREFIX: 'cinepleinair',
   APP_GITHUB_URL: 'https://github.com/raphodn/open-air-events',
   OEDB_WIKI_URL: 'https://wiki.openstreetmap.org/wiki/OpenEventDatabase',
   OEDB_API_URL: 'https://api.openeventdatabase.org',

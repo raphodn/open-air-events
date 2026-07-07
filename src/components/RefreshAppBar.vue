@@ -1,20 +1,25 @@
 <template>
-  <v-app-bar v-if="isStale" class="mb-4" color="secondary" variant="tonal" height="40" style="cursor: pointer;" @click="refresh">
+  <v-app-bar v-if="isStale && !isRefreshAppBarDismissed" class="mb-4" color="secondary" variant="tonal" height="40" @click="refreshEvents">
     <v-app-bar-title class="text-body-2">
-      Dernière mise à jour {{ relativeLastSyncDate }}
+      <span v-if="!display.smAndDown.value">Dernière mise à jour {{ relativeLastSyncDate }}. Cliquez pour rafraîchir la liste.</span>
+      <span v-else>Dernière màj {{ relativeLastSyncDate }}. Cliquez pour rafraîchir.</span>
     </v-app-bar-title>
-    <v-btn icon="mdi-refresh" variant="text" aria-label="Rafraîchir" />
+    <v-btn icon="mdi-close" variant="text" @click.stop="dismissRefreshAppBar" aria-label="Fermer" />
   </v-app-bar>
 </template>
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useDisplay } from 'vuetify'
 import { useEventsStore } from '../stores/events.js'
 import dateUtils from '../utils/date.js'
 
 const eventsStore = useEventsStore()
+const { isRefreshAppBarDismissed } = storeToRefs(eventsStore)
+const display = useDisplay()
 const now = ref(Date.now())
-const hoursBeforeStale = 24
+const hoursForStale = 24
 let intervalId = null
 
 const relativeLastSyncDate = computed(() => {
@@ -24,13 +29,18 @@ const relativeLastSyncDate = computed(() => {
     : 'N/A'
 })
 
+// Determine if the events list is stale (older than 24 hours)
 const isStale = computed(() => {
   if (!eventsStore.eventsLastSyncDate) return false
   const diffHours = (now.value - new Date(eventsStore.eventsLastSyncDate).getTime()) / 36e5
-  return diffHours > hoursBeforeStale
+  return diffHours > hoursForStale
 })
 
-const refresh = () => {
+const dismissRefreshAppBar = () => {
+  eventsStore.isRefreshAppBarDismissed = true
+}
+
+const refreshEvents = () => {
   eventsStore.fetchEvents({ forceRefresh: true })
     .catch((error) => {
       console.error('Error refreshing events:', error)
