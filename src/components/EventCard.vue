@@ -29,8 +29,17 @@
       <v-btn :block="display.smAndDown.value" color="primary" size="small" :to="detailsTo" link>Détails</v-btn>
     </v-card-text>
     <v-card-text v-else-if="props.showFooter" class="text-caption text-grey-darken-1" style="max-height:50px;">
-      Ajouté le {{ dateUtils.formatDate(event.properties.createdate) }}
+      Ajoutée le {{ dateUtils.formatDate(event.properties.createdate) }}
     </v-card-text>
+
+    <v-btn
+      class="floating-btn"
+      icon="mdi-chevron-right"
+      size="small"
+      color="primary"
+      variant="text"
+      :to="detailsTo"
+    />
   </v-card>
 </template>
 
@@ -83,4 +92,13 @@ const isTodayEvent = computed(() => {
 </script>
 
 <style scoped>
+.v-card {
+  position: relative;
+}
+
+.floating-btn {
+  position: absolute;
+  bottom: 2px;
+  right: 0px;
+}
 </style>
