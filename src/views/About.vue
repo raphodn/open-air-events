@@ -8,7 +8,7 @@
 
   <h2 class="text-h6 font-weight-bold">Comment ça marche ?</h2>
   <p>
-    Le site est collaboratif. Si il manque une séance, <router-link :to="{ name: 'create-event' }">ajoutez-la</router-link> en quelques clics.
+    Le site est collaboratif. Si il manque une séance, <router-link :to="{ name: 'event-create' }">ajoutez-la</router-link> en quelques clics.
   </p>
   <p>
     Chaque séance est stockée dans la base de données <a :href="constants.OEDB_WIKI_URL" target="_blank">OpenEventDatabase</a>.

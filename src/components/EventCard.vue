@@ -25,19 +25,28 @@
       </p>
     </v-card-text>
     <v-divider v-if="props.showFooter"></v-divider>
-    <v-card-text v-if="props.showFooter" style="max-height:50px;">
+    <v-card-text v-if="props.showFooter" style="max-height:60px;">
       <v-btn v-if="props.showActionButton" :block="display.smAndDown.value" color="primary" size="small" :to="detailsTo" link>Détails</v-btn>
       <span v-else class="text-caption text-grey-darken-1">Ajoutée le {{ dateUtils.formatDate(event.properties.createdate) }}</span>
     </v-card-text>
 
     <v-btn
-      v-if="!props.readonly"
+      v-if="props.showDetailsIconButton"
       class="floating-btn"
       icon="mdi-chevron-right"
       size="small"
       color="primary"
       variant="text"
       :to="detailsTo"
+    />
+    <v-btn
+      v-else-if="props.showEditIconButton"
+      class="floating-btn"
+      icon="mdi-pencil"
+      size="small"
+      color="primary"
+      variant="text"
+      :to="editTo"
     />
   </v-card>
 </template>
@@ -61,6 +70,14 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  showDetailsIconButton: {
+    type: Boolean,
+    default: false
+  },
+  showEditIconButton: {
+    type: Boolean,
+    default: false
+  },
   readonly: {
     type: Boolean,
     default: false
@@ -71,6 +88,9 @@ const display = useDisplay()
 
 const detailsTo = computed(() => {
   return { name: 'event-details', params: { id: props.event.properties.id } }
+})
+const editTo = computed(() => {
+  return { name: 'event-edit', params: { id: props.event.properties.id } }
 })
 
 const cardTo = computed(() => {
