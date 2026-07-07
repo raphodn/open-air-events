@@ -24,15 +24,14 @@
         <span>💰 Payant</span>
       </p>
     </v-card-text>
-    <v-divider v-if="props.showActionButton || props.showFooter"></v-divider>
-    <v-card-text v-if="props.showActionButton">
-      <v-btn :block="display.smAndDown.value" color="primary" size="small" :to="detailsTo" link>Détails</v-btn>
-    </v-card-text>
-    <v-card-text v-else-if="props.showFooter" class="text-caption text-grey-darken-1" style="max-height:50px;">
-      Ajoutée le {{ dateUtils.formatDate(event.properties.createdate) }}
+    <v-divider v-if="props.showFooter"></v-divider>
+    <v-card-text v-if="props.showFooter">
+      <v-btn v-if="props.showActionButton" :block="display.smAndDown.value" color="primary" size="small" :to="detailsTo" link>Détails</v-btn>
+      <span v-else class="text-caption text-grey-darken-1">Ajoutée le {{ dateUtils.formatDate(event.properties.createdate) }}</span>
     </v-card-text>
 
     <v-btn
+      v-if="!props.readonly"
       class="floating-btn"
       icon="mdi-chevron-right"
       size="small"
@@ -54,11 +53,11 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  showActionButton: {
+  showFooter: {
     type: Boolean,
     default: false
   },
-  showFooter: {
+  showActionButton: {
     type: Boolean,
     default: false
   },
@@ -99,6 +98,6 @@ const isTodayEvent = computed(() => {
 .floating-btn {
   position: absolute;
   bottom: 2px;
-  right: 0px;
+  right: 2px;
 }
 </style>

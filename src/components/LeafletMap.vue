@@ -3,7 +3,7 @@
     <l-tile-layer :url="tiles" layer-type="base" name="OpenStreetMap" :attribution="attribution" />
     <l-marker v-for="item in mapItems" :key="getMapItemKey(item)" :lat-lng="getMapItemLatLng(item)" :icon="markerIcon">
       <l-popup>
-        <EventCard v-if="isEventsMode" :event="item" :showActionButton="true" readonly />
+        <EventCard v-if="isEventsMode" :event="item" :showFooter="true" :showActionButton="true" readonly />
         <LocationCard
           v-else
           :location="getLocationFromMapItem(item)"
