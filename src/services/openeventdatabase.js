@@ -134,16 +134,26 @@ const updateEvent = (existingEvent, eventData) => {
   })
 }
 
-// Example: Salle des fêtes, Route de la Pierre de Dîme, Saint-Jean-d'Hérans (38)
+// Examples:
+// - Salle des fêtes, Route de la Pierre de Dîme, Saint-Jean-d'Hérans (38)
+// - La Flachère (38)
 const eventLocationFullName = (event) => {
+  let osm_key = event.properties.osm_key || ''
+  let osm_value = event.properties.osm_value || ''
   let name = event.properties.osm_name || ''
   let housenumber = event.properties.osm_addr_housenumber || ''
   let street = event.properties.osm_addr_street || ''
   let city = event.properties.osm_addr_city || ''
   let postcode = event.properties.osm_addr_postcode || ''
-  let cityWithPostcodeShortPart = city ? `${city} ${postcode ? `(${geoUtils.getDepartmentCodeFromPostcode(postcode)})` : ''}` : ''
+  let postcodeShortPart = postcode ? `(${geoUtils.getDepartmentCodeFromPostcode(postcode)})` : ''
+  let cityWithPostcodeShortPart = city ? `${city} ${postcodeShortPart}` : ''
   // let state = event.properties.osm_addr_state || ''
   // let country = event.properties.osm_addr_country || ''
+
+  // Some locations (like villages) have missing info
+  if (osm_key === 'place' && ['village', 'town'].includes(osm_value)) {
+    return `${name} ${postcodeShortPart}`.trim()
+  }
   return [name, street, cityWithPostcodeShortPart].filter(Boolean).join(', ')
 }
 
