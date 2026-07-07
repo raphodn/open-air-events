@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import oedbService from '../services/openeventdatabase.js'
+import constants from '../constants.js'
 
 export const useEventsStore = defineStore('events', () => {
   const events = ref([])
   const eventsCount = ref(0)
   const eventsLastSyncDate = ref(null)
+  const isRefreshAppBarDismissed = ref(false)
 
   const upcomingEvents = computed(() => {
     const now = new Date()
@@ -33,9 +35,17 @@ export const useEventsStore = defineStore('events', () => {
     events,
     eventsCount,
     eventsLastSyncDate,
+    isRefreshAppBarDismissed,
     upcomingEvents,
     pastEvents,
     fetchEvents,
     getEventById
+  }
+},
+{
+  persist: {
+    key: `${constants.APP_STORE_PREFIX}-events`,
+    storage: localStorage,
+    paths: ['events', 'eventsCount', 'eventsLastSyncDate', 'isRefreshAppBarDismissed']
   }
 })

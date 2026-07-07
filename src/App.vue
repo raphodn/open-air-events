@@ -11,6 +11,7 @@
         </v-row>
         <template v-else>
           <Breadcrumbs />
+          <RefreshAppBar />
           <router-view />
         </template>
       </v-container>
@@ -26,11 +27,12 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useEventsStore } from './stores/events.js'
 import { useSnackbar } from './composables/useSnackbar.js'
 import Header from './components/Header.vue'
 import Breadcrumbs from './components/Breadcrumbs.vue'
 import Footer from './components/Footer.vue'
-import { useEventsStore } from './stores/events.js'
+import RefreshAppBar from './components/RefreshAppBar.vue'
 
 const eventsStore = useEventsStore()
 const isPreloadingEvents = ref(true)

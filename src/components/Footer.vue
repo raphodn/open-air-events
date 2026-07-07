@@ -3,7 +3,7 @@
     <v-row no-gutters>
       <v-col class="text-center">
         <p>
-          {{ eventsCount }} séances.
+          {{ eventsStore.eventsCount }} séances.
           <br v-if="!display.smAndUp.value" />
           Dernière mise à jour {{ relativeLastSyncDate }}.
         </p>
@@ -16,21 +16,19 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
-import dateUtils from '../utils/date.js'
 import { useEventsStore } from '../stores/events.js'
+import dateUtils from '../utils/date.js'
 
 const eventsStore = useEventsStore()
-const { eventsCount, eventsLastSyncDate } = storeToRefs(eventsStore)
 const display = useDisplay()
 const now = ref(Date.now())
 let intervalId = null
 
 const relativeLastSyncDate = computed(() => {
   now.value
-  return eventsLastSyncDate.value
-    ? dateUtils.formatRelativeTime(eventsLastSyncDate.value)
+  return eventsStore.eventsLastSyncDate
+    ? dateUtils.formatRelativeTime(eventsStore.eventsLastSyncDate)
     : 'N/A'
 })
 
