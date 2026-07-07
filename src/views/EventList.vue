@@ -158,7 +158,7 @@
   <template v-if="selectedDisplayMode === 'grid'">
     <v-row class="mt-0">
       <v-col v-for="event in displayedEvents" :key="event.properties.id" cols="12" sm="6" md="4" xl="3">
-        <EventCard :event="event" />
+        <EventCard :event="event" :showDetailsIconButton="true" />
       </v-col>
     </v-row>
   </template>

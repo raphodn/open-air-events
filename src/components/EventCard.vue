@@ -24,13 +24,30 @@
         <span>💰 Payant</span>
       </p>
     </v-card-text>
-    <v-divider v-if="props.showActionButton || props.showFooter"></v-divider>
-    <v-card-text v-if="props.showActionButton">
-      <v-btn :block="display.smAndDown.value" color="primary" size="small" :to="detailsTo" link>Détails</v-btn>
+    <v-divider v-if="props.showFooter"></v-divider>
+    <v-card-text v-if="props.showFooter" style="max-height:60px;">
+      <v-btn v-if="props.showActionButton" :block="display.smAndDown.value" color="primary" size="small" :to="detailsTo" link>Détails</v-btn>
+      <span v-else class="text-caption text-grey-darken-1">Ajoutée le {{ dateUtils.formatDate(event.properties.createdate) }}</span>
     </v-card-text>
-    <v-card-text v-else-if="props.showFooter" class="text-caption text-grey-darken-1" style="max-height:50px;">
-      Ajouté le {{ dateUtils.formatDate(event.properties.createdate) }}
-    </v-card-text>
+
+    <v-btn
+      v-if="props.showDetailsIconButton"
+      style="position: absolute; bottom: 2px; right: 2px;"
+      icon="mdi-chevron-right"
+      size="small"
+      color="primary"
+      variant="text"
+      :to="detailsTo"
+    />
+    <v-btn
+      v-else-if="props.showEditIconButton"
+      style="position: absolute; bottom: 8px; right: 8px;"
+      icon="mdi-pencil"
+      size="x-small"
+      color="primary"
+      variant="text"
+      :to="editTo"
+    />
   </v-card>
 </template>
 
@@ -45,11 +62,19 @@ const props = defineProps({
     type: Object,
     required: true
   },
+  showFooter: {
+    type: Boolean,
+    default: false
+  },
   showActionButton: {
     type: Boolean,
     default: false
   },
-  showFooter: {
+  showDetailsIconButton: {
+    type: Boolean,
+    default: false
+  },
+  showEditIconButton: {
     type: Boolean,
     default: false
   },
@@ -63,6 +88,9 @@ const display = useDisplay()
 
 const detailsTo = computed(() => {
   return { name: 'event-details', params: { id: props.event.properties.id } }
+})
+const editTo = computed(() => {
+  return { name: 'event-edit', params: { id: props.event.properties.id } }
 })
 
 const cardTo = computed(() => {

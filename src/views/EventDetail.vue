@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12" md="6">
-      <EventCard :event="event" :showFooter="true" readonly />
+      <EventCard :event="event" :showFooter="true" :showEditIconButton="true" readonly />
     </v-col>
     <v-col cols="12" md="6" style="min-height:400px">
       <LeafletMap :locations="[event.properties]" :showActions="false" />
