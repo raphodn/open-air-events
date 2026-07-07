@@ -14,19 +14,40 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useEventsStore } from '../stores/events.js'
 
 const route = useRoute()
-const possibleParams = [':id']
+const eventsStore = useEventsStore()
+const eventLabel = ref('')
 
 const breadcrumbs = computed(() => {
   return route.meta.breadcrumbs ?? null
 })
 
+// Watch for route changes to get event data
+watch(() => route.params.id, (id) => {
+  if (!id) {
+    eventLabel.value = ''
+    return
+  }
+
+  // Get event label (or uuid) from store
+  const event = eventsStore.getEventById(id)
+  if (event) {
+    eventLabel.value = event.properties.label
+  } else {
+    eventLabel.value = id
+  }
+}, { immediate: true })
+
 const getItemTitle = (item) => {
-  if (possibleParams.includes(item.title)) {
-    return route.params[item.title.substring(1)]
+  if (item.title === ':id' && eventLabel.value) {
+    // Truncate to first 13 chars + ellipsis if needed
+    return eventLabel.value.length > 13
+      ? eventLabel.value.substring(0, 13) + '…'
+      : eventLabel.value
   }
 
   return item.title
@@ -37,7 +58,7 @@ const getItemTo = (item) => {
     return item.to
   }
 
-  if (possibleParams.some(param => item.to.includes(param))) {
+  if (item.to.includes(':id')) {
     return item.to.replace(':id', route.params.id)
   }
 
