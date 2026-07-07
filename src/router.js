@@ -2,7 +2,22 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   { path: '/', name: 'home', component: () => import('./views/Home.vue'), meta: { title: 'Accueil', icon: 'mdi-home', breadcrumbs: null } },
-  { path: '/events', name: 'events', component: () => import('./views/EventList.vue'), meta: { title: 'Toutes  les séances', icon: 'mdi-calendar', breadcrumbs: [{ title: 'Toutes les séances', to: '/events' }] } },
+  { 
+    path: '/events',
+    name: 'events',
+    component: () => import('./views/EventList.vue'),
+    meta: {
+      title: 'Toutes les séances',
+      icon: 'mdi-calendar',
+      breadcrumbs: (route) => {
+        const pastParam = route.query.past === '1'
+        return [{
+          title: pastParam ? 'Toutes les séances' : 'Toutes les séances à venir',
+          to: '/events'
+        }]
+      }
+    } 
+  },
   { path: '/events/create', name: 'event-create', component: () => import('./views/EventCreate.vue'), meta: { title: 'Ajouter une séance', icon: 'mdi-plus', breadcrumbs: [{ title: 'Liste', to: '/events' }, { title: 'Ajouter une séance' }] } },
   { path: '/events/:id', name: 'event-details', component: () => import('./views/EventDetail.vue'), meta: { title: "Détails de la séance", icon: 'mdi-calendar', breadcrumbs: [{ title: 'Liste', to: '/events' }, { title: "Détails de la séance" }] } },
   { path: '/events/:id/edit', name: 'event-edit', component: () => import('./views/EventEdit.vue'), meta: { title: "Modifier la séance", icon: 'mdi-pencil', breadcrumbs: [{ title: 'Liste', to: '/events' }, { title: ':id', to: '/events/:id' }, { title: "Modifier" }] } },

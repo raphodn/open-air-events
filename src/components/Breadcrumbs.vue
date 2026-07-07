@@ -23,7 +23,14 @@ const eventsStore = useEventsStore()
 const eventLabel = ref('')
 
 const breadcrumbs = computed(() => {
-  return route.meta.breadcrumbs ?? null
+  const meta = route.meta.breadcrumbs
+  
+  // If breadcrumbs is a function, call it with the route
+  if (typeof meta === 'function') {
+    return meta(route)
+  }
+  
+  return meta ?? null
 })
 
 // Watch for route changes to get event data
