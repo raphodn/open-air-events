@@ -3,10 +3,24 @@ import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 import constants from './src/constants.js'
+import { statcounterHtml } from './src/utils/statcounter.js'
 
 export default defineConfig({
   plugins: [
     vue(),
+    {
+      name: 'statcounter',
+      transformIndexHtml(html) {
+        // Only inject Statcounter in production
+        if (process.env.NODE_ENV === 'production') {
+          return html.replace(
+            '<!-- Statcounter placeholder -->',
+            statcounterHtml
+          )
+        }
+        return html
+      }
+    },
     VitePWA({
       registerType: 'prompt',
       includeAssets: ['favicon.ico', 'favicon.png'],
