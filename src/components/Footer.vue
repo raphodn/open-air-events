@@ -1,5 +1,5 @@
 <template>
-  <v-footer class="flex-grow-0 background-color-secondary-lighten-5">
+  <v-footer class="flex-grow-0 background-color-secondary-lighten-10">
     <v-row no-gutters>
       <v-col class="text-center">
         <p>

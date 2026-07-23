@@ -111,4 +111,7 @@ const isTodayEvent = computed(() => {
 </script>
 
 <style scoped>
+.v-card {
+  box-shadow: 0 2px 4px rgba(var(--v-theme-secondary), 0.2) !important;
+}
 </style>
