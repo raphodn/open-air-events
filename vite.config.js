@@ -28,7 +28,7 @@ export default defineConfig({
         name: constants.APP_NAME,
         short_name: constants.APP_NAME,
         description: constants.APP_DESCRIPTION,
-        theme_color: '#0A3A5A',
+        theme_color: '#045577',
         background_color: '#F6C24A',
         display: 'standalone',
         start_url: '/',

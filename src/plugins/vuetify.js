@@ -20,7 +20,7 @@ export const vuetify = createVuetify({
     themes: {
       light: {
         colors: {
-          primary: '#0A3A5A',
+          primary: '#045577',
           secondary: '#F6C24A',
           'on-primary': '#F2EEE6',
           'on-secondary': '#0A3A5A'
