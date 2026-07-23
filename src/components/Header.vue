@@ -2,7 +2,7 @@
   <v-app-bar class="bg-primary">
     <v-app-bar-title>
       <span style="cursor:pointer" role="link" tabindex="0" @click="$router.push('/')" @keydown.enter="$router.push('/')">
-        <img src="/favicon.png" height="28" width="28" alt="Open Prices logo" style="vertical-align:bottom" />
+        <img src="/logo.png" height="28" width="28" alt="Open Prices logo" style="vertical-align:bottom" />
         {{ constants.APP_NAME }}
       </span>
     </v-app-bar-title>
