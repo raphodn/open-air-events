@@ -1,0 +1,70 @@
+{
+  "event_count": 259,
+  "event_label_top_5": [
+    {
+      "name": "Flow",
+      "count": 11
+    },
+    {
+      "name": "En fanfare",
+      "count": 10
+    },
+    {
+      "name": "Le robot sauvage",
+      "count": 9
+    },
+    {
+      "name": "Un p'tit truc en plus",
+      "count": 8
+    },
+    {
+      "name": "Dragons",
+      "count": 7
+    }
+  ],
+  "event_osm_addr_state_top_5": [
+    {
+      "name": "Auvergne-Rhône-Alpes",
+      "count": 183
+    },
+    {
+      "name": "Île-de-France",
+      "count": 33
+    },
+    {
+      "name": "Provence-Alpes-Côte d'Azur",
+      "count": 12
+    },
+    {
+      "name": "Normandie",
+      "count": 8
+    },
+    {
+      "name": "Bourgogne-Franche-Comté",
+      "count": 6
+    }
+  ],
+  "event_osm_addr_county_top_5": [
+    {
+      "name": "Isère",
+      "count": 129
+    },
+    {
+      "name": "Métropole de Lyon",
+      "count": 17
+    },
+    {
+      "name": "Yvelines",
+      "count": 16
+    },
+    {
+      "name": "Haute-Savoie",
+      "count": 13
+    },
+    {
+      "name": "Savoie",
+      "count": 9
+    }
+  ],
+  "last_updated": "2026-08-25T16:59:32.520693+00:00"
+}
