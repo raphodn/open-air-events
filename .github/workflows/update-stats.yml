@@ -1,0 +1,43 @@
+name: Update Stats
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-stats
+  cancel-in-progress: true
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+
+      - name: Generate stats
+        run: python scripts/generate_stats.py
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(Data): mise à jour des stats'
+          title: 'chore(Data): mise à jour des stats'
+          body: |
+            Cette PR a été créée automatiquement par le workflow `update-stats.yml` (programmé tous les dimanches à 3h).
+            Fichier mis à jour : `src/data/stats.json`
+          branch: chore/update-stats
+          delete-branch: true
+          add-paths: |
+            src/data/stats.json
