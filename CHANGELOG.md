@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0](https://github.com/raphodn/open-air-events/compare/v0.3.0...v0.4.0) (2026-08-25)
+
+
+### Features
+
+* **Stats:** Github Action pour màj les stats tous les dimanches ([#83](https://github.com/raphodn/open-air-events/issues/83)) ([97a237a](https://github.com/raphodn/open-air-events/commit/97a237a2c891f9139bf3ab6b83afea2eed9b477e))
+* **Stats:** script pour générer `stats.json` (avec qq stats basiques) ([#81](https://github.com/raphodn/open-air-events/issues/81)) ([f874bd9](https://github.com/raphodn/open-air-events/commit/f874bd95f54f5442aafd8f0d764db65d37b9d3a3))
+
+
+### Technical
+
+* ajouter un `AGENTS.md` (et enlever le `copilot-instructions.md`) ([#78](https://github.com/raphodn/open-air-events/issues/78)) ([963a989](https://github.com/raphodn/open-air-events/commit/963a9892d445149e542e90ad80e59882f8c9f887))
+* **Stats:** plugger la page stats sur stats.json ([#82](https://github.com/raphodn/open-air-events/issues/82)) ([d9ca319](https://github.com/raphodn/open-air-events/commit/d9ca319db9f0db12742d096d493603f01f02b7d1))
+
 ## [0.3.0](https://github.com/raphodn/open-air-events/compare/v0.2.0...v0.3.0) (2026-07-23)
 
 
