@@ -1,5 +1,5 @@
 {
-  "event_count": 259,
+  "event_count": 260,
   "event_label_top_5": [
     {
       "name": "Flow",
@@ -29,7 +29,7 @@
     },
     {
       "name": "Île-de-France",
-      "count": 33
+      "count": 34
     },
     {
       "name": "Provence-Alpes-Côte d'Azur",
@@ -66,5 +66,5 @@
       "count": 9
     }
   ],
-  "last_updated": "2026-08-25T16:59:32.520693+00:00"
+  "last_updated": "2026-09-06T07:29:01.172665+00:00"
 }
